@@ -7,14 +7,32 @@ import jakarta.persistence.TypedQuery;
 import enumerativeTypes.Categoria;
 import model.Prodotto;
 import remoteInterfaces.CatalogoRemote;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
 @Stateless
 public class Catalogo implements CatalogoRemote {
-    @Inject
+    @PersistenceContext(unitName="FutureForgeGearPU")
     private EntityManager em;
 
+        /*
+    private EntityManagerFactory emf;
+    private EntityManager em;
+
+    public Catalogo() {
+        // Create EntityManagerFactory using the persistence unit name
+        emf = Persistence.createEntityManagerFactory("FutureForgeGearPU");
+        em = emf.createEntityManager();
+    }
+    */
+
+
+    //@PersistenceContext
+    //private EntityManager em;
+
+    //private EntityManagerFactory = Persistence.createEntityManagerFactory("myPersistenceUnit");
+    //private EntityManager em = emf.createEntityManager();
     @Override
     public void addProduct(Prodotto prodotto) {
         em.persist(prodotto);
