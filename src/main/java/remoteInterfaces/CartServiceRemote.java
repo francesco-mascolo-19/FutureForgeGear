@@ -2,7 +2,7 @@ package remoteInterfaces;
 
 import model.Cart;
 
-//import javax.ejb.Remote;
+
 import jakarta.ejb.Remote;
 
 @Remote
