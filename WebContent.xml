@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context docBase="C:\Users\rical\FutureForgeGear\src\main\webapp">
+    <Resource
+            auth="Container"
+            driverClassName="com.mysql.cj.jdbc.Driver"
+            maxActive="100"
+            maxIdle="30"
+            maxWait="10000"
+
+            name="java:app/jdbc/FutureForgeGearDS"
+            username="root"
+            password="root"
+
+            type="javax.sql.DataSource"
+            url="jdbc:mysql://localhost:3306/FutureForgeGearDB"
+    />
+</Context>
