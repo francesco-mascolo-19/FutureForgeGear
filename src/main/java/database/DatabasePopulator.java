@@ -38,6 +38,7 @@ public class DatabasePopulator {
     @PostConstruct
     public void populateDB(){
         System.out.println("HO INIZIATO IL POPOLAMENTOOOOOOOOO!! \n");
+        System.out.println(em);
         em.persist(p1);
         em.persist(p2);
         em.persist(p3);

@@ -1,7 +1,6 @@
-package control;
+package service;
 
 import jakarta.ejb.Stateless;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import enumerativeTypes.Categoria;
