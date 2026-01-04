@@ -1,96 +1,134 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%
-    try {
-        Class.forName("control.Catalogo");
-        Class.forName("model.Prodotto");
-    } catch (ClassNotFoundException e) {
-        System.out.println("Errore: " + e.getMessage());
-    }
-%>
-
-
-<%@ page import="control.Catalogo" %>
 <%@ page import="model.Prodotto" %>
-
 <%@ page import="java.util.List" %>
-<%@ page import="javax.swing.*" %>
-<%@ page import="java.awt.image.BufferedImage" %>
-<%@ page import="javax.imageio.ImageIO" %>
-<%@ page import="java.io.ByteArrayOutputStream" %>
-<%@ page import="java.util.Base64" %>
-
-<%!
-    public static String convertImageIconToBase64(ImageIcon imageIcon) {
-        try {
-            // Ottieni l'immagine da ImageIcon
-            BufferedImage bufferedImage = new BufferedImage(
-                    imageIcon.getIconWidth(),
-                    imageIcon.getIconHeight(),
-                    BufferedImage.TYPE_INT_RGB
-            );
-            imageIcon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
-
-            // Converti BufferedImage in array di byte
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-            byte[] imageBytes = byteArrayOutputStream.toByteArray();
-
-            // Codifica in Base64
-            return Base64.getEncoder().encodeToString(imageBytes);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-%>
 
 <%
-    Catalogo catalogo = new Catalogo();
-    List<Prodotto> prodotti = catalogo.getProducts();
-
-    // Verifica se la lista prodotti è vuota o nulla
-    if (prodotti.isEmpty()) {
-        out.println("N");
+    List<Prodotto> prodotti = (List<Prodotto>) request.getAttribute("prodotti");
+    if (prodotti == null) {
+        System.out.println("Prodotti is null in JSP");
+    } else {
+        System.out.println("Number of products in JSP: " + prodotti.size());
     }
 %>
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="utf-8">
-    <title>Tutti i Prodotti</title>
-    <!--
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/Product.css">
-    -->
+    <meta charset="UTF-8">
+    <title>Tutti i Prodotti - FutureForgeGear</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #product-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        #product-list li {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        #product-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        #product-list a {
+            text-decoration: none;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .product-price {
+            color: #27ae60;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .product-category {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-<jsp:include page="Navbar.jsp" />
+<%@include file="Navbar.jsp" %>
 
 <div class="content">
-    <h1>Prodotti</h1>
+    <h1>Tutti i Prodotti</h1>
+
+    <% if (prodotti != null && !prodotti.isEmpty()) { %>
     <ul id="product-list">
-        <%
-            if (prodotti != null && !prodotti.isEmpty()) {
-                for (Prodotto product : prodotti) {
-
-                    //byte[] imageBytes = product.getImage();
-                    //String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-
-                    ImageIcon imageIcon = product.getImage(); // Ottieni l'ImageIcon
-                    String base64Image = convertImageIconToBase64(imageIcon);
-
-                    out.println("<li><a href='ProductDetails.jsp?id=" + product.getId() + "'>" +
-                            product.getNome() + "<br>" +
-                            "<img src='data:image/jpg;base64," + base64Image + "' alt='Immagine Prodotto' style='max-width:100px;'>"+
-                            "</a></li>");
-                }
-            } else {
-                out.println("<li>Nessun prodotto disponibile</li>");
-            }
-        %>
+        <% for (Prodotto prodotto : prodotti) { %>
+        <li>
+            <a href="productDetails.jsp?id=<%= prodotto.getId() %>">
+                <div class="product-name"><%= prodotto.getNome() %></div>
+                <% if (prodotto.getDescrizione() != null && !prodotto.getDescrizione().isEmpty()) { %>
+                <div class="product-description">
+                    <%= prodotto.getDescrizione().length() > 100 ?
+                            prodotto.getDescrizione().substring(0, 100) + "..." :
+                            prodotto.getDescrizione() %>
+                </div>
+                <% } %>
+                <div class="product-price">€ <%= String.format("%.2f", prodotto.getPrezzo()) %></div>
+                <% if (prodotto.getCategoria() != null) { %>
+                <div class="product-category">Categoria: <%= prodotto.getCategoria() %></div>
+                <% } %>
+            </a>
+        </li>
+        <% } %>
     </ul>
+    <% } else { %>
+    <div class="no-products">
+        Nessun prodotto disponibile al momento.
+    </div>
+    <% } %>
 </div>
 
+<%@include file="footer.jsp" %>
 </body>
+</html>
