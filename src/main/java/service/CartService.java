@@ -1,13 +1,13 @@
-package control;
+package service;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import model.Cart;
 import remoteInterfaces.CartServiceRemote;
 
 public class CartService implements CartServiceRemote {
-    @Inject
+    @PersistenceContext(unitName = "FutureForgeGearPU")
     private EntityManager em;
 
     @Override

@@ -1,174 +1,481 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+         pageEncoding="ISO-8859-1"%>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #2c3e50;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+    body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-  .logo {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-  }
+    * {
+        box-sizing: inherit;
+    }
 
-  .logo:hover {
-    color: #3498db;
-  }
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-  .nav-links {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-  }
+    .content {
+        padding: 20px;
+    }
 
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-  }
+    .navbar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+    }
 
-  .nav-links a:hover {
-    background-color: #3498db;
-  }
+    .navbar li {
+        margin-right: 20px;
+    }
 
-  .search-form {
-    display: flex;
-    gap: 10px;
-  }
+    .navbar a {
+        text-decoration: none;
+        color: #000;
+    }
 
-  .search-input {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    width: 200px;
-  }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
 
-  .search-button {
-    padding: 8px 16px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+    .dropdown:hover .dropdown-content {
+        display: flex;
+        flex-direction: column;
+        padding:5px;
+        gap:10px;
+    }
 
-  .search-button:hover {
-    background-color: #2980b9;
-  }
+    .cerca-form {
+        display: inline-block;
+    }
 
-  .user-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-  }
+    .cerca-form input {
+        padding: 5px;
+        margin-right: 5px;
+    }
 
-  .user-actions a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    background-color: #34495e;
-  }
+    .cerca-form button {
+        padding: 5px;
+    }
 
-  .user-actions a:hover {
-    background-color: #3498db;
-  }
+    .search-results {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1001;
+        width: 100%;
+    }
 
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    gap: 4px;
-  }
+    .search-results div {
+        padding: 5px;
+        cursor: pointer;
+    }
 
-  .hamburger span {
-    width: 25px;
-    height: 3px;
-    background-color: white;
-  }
+    .search-results div:hover {
+        background-color: #f0f0f0;
+    }
+    .search-results .no-results {
+        padding: 20px;
+        text-align: center;
+        color: #666; /* Aggiunto per colore testo meno invasivo */
+    }
 
-  @media (max-width: 768px) {
+    .login {
+        display: inline-block;
+        margin-left: 20px;
+    }
+
+    .login-button {
+        text-decoration: none;
+        color: #000;
+        padding: 5px 10px;
+        border: 1px solid #000;
+        border-radius: 5px;
+    }
+
+    .login-button:hover {
+        background-color: #f0f0f0;
+    }
+
     .hamburger {
-      display: flex;
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
     }
 
-    .nav-links {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: #2c3e50;
-      flex-direction: column;
-      padding: 20px;
+    .hamburger div {
+        width: 25px;
+        height: 2px;
+        background-color: #000;
+        margin: 4px 0;
     }
 
-    .nav-links.active {
-      display: flex;
+    @media (max-width: 480px) {
+        /* Nascondi il menu principale nell'header */
+        .navbar .nav-list {
+            display: none;
+        }
     }
 
-    .search-form {
-      display: none;
-    }
-  }
+    @media (max-width: 1200px) {
+        .navbar.responsive {
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 100%;
+            top: 60px; /* aggiustare in base al design */
+            left: 0;
+            padding: 20px;
+            z-index: 1000;
+        }
 
-  body {
-    padding-top: 70px;
-  }
+        .navbar.responsive ul {
+            flex-direction: column;
+        }
+
+        .navbar.responsive div {
+            margin-right: 0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .navbar.responsive li {
+            margin-right: 0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .hamburger {
+            display: flex;
+        }
+
+        .cerca-form {
+            display: none; /* Nascondi la barra di ricerca */
+        }
+
+        .login {
+            display: none; /* Nascondi il login */
+        }
+
+        .carrello {
+            display: none; /* Nascondi il carrello */
+        }
+
+        .navbar.responsive .cerca-form,
+        .navbar.responsive .login,
+        .navbar.responsive .carrello {
+            display: block; /* Mostra barra di ricerca, login e carrello quando la navbar è aperta */
+        }
+
+        .navbar .logo-link {
+            text-align: center; /* Centra il logo */
+        }
+
+        .navbar.responsive .dropdown-content {
+            display:none;
+        }
+
+        .navbar.responsive .nav-list:hover {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px; /* Spazio superiore per separare dal logo */
+        }
+
+        .navbar.responsive .nav-list li {
+            margin-bottom: 10px; /* Spaziatura tra le voci di menu */
+        }
+    }
+
+    .search-results {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1001;
+        width: 300px; /* Modifica la larghezza per adattarla alla tua barra di ricerca */
+        border: 1px solid #ccc; /* Aggiungi un bordo per visibilit */
+    }
+
+    .search-results div {
+        padding: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .search-results div:hover {
+        background-color: #f0f0f0;
+    }
+
+    .search-results .no-results {
+        padding: 10px;
+        text-align: center;
+        color: #666; /* Colore testo meno invasivo */
+    }
+
+    #searchInput:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px white inset; /* Esempio di nascondere con un box-shadow bianco */
+    }
+
+
 </style>
 
 <div class="navbar">
-  <a href="home.jsp" class="logo">FutureForgeGear</a>
 
-  <div class="hamburger" id="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+    <div class="hamburger" id="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 
-  <ul class="nav-links" id="navLinks">
-    <li><a href="home.jsp">Home</a></li>
-    <li><a href="tuttiProdotti.jsp">Prodotti</a></li>
-    <li><a href="chi-siamo.jsp">Chi Siamo</a></li>
-    <li><a href="contatti.jsp">Contatti</a></li>
-  </ul>
+    <a href="Home.jsp" class="logo-link">FutureForgeGear</a>
 
-  <form class="search-form" action="product" method="GET">
-    <input type="hidden" name="action" value="search">
-    <input type="text" name="nome" class="search-input" placeholder="Cerca prodotti...">
-    <button type="submit" class="search-button">Cerca</button>
-  </form>
+    <div >
+        <nav>
+            <ul class="nav-list">
+                <li><a href="index.jsp">Home</a></li>
+                <li><a href="chi-siamo.jsp">Chi Siamo</a></li>
+                <li class="dropdown">
+                    <a href="tuttiProdotti.jsp" class="dropbtn">Prodotti</a>
+                    <div class="dropdown-content">
+                        <a href="Product.jsp?categoria=Fissi">Fissi</a>
+                        <a href="Product.jsp?categoria=Portatili">Portatili</a>
+                        <a href="Product.jsp?categoria=Periferiche">Pericheriche</a>
+                        <a href="tuttiProdotti.jsp">All</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
 
-  <div class="user-actions">
-    <% if (session.getAttribute("Email") == null) { %>
-    <a href="login.jsp">Login</a>
-    <% } else { %>
-    <a href="logout">Logout</a>
-    <a href="profilo.jsp">Profilo</a>
-    <% } %>
-    <a href="carrello.jsp">Carrello</a>
-  </div>
+    <div class="dx">
+
+
+        <div class="cerca-form">
+            <form action="product" method="GET">
+                <input type="text" name="nome" id="searchInput" placeholder="Cerca prodotto" autocomplete="off">
+                <button type="submit" onclick="submitSearch(event)">Cerca</button>
+            </form>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+
+
+    </div>
+
+    <div class="login">
+        <% if (session.getAttribute("Email") == null) { %>
+        <a class="login-button" href="pagina_accesso.jsp">Login</a>
+        <% } else { %>
+        <a class="login-button" href="logout">LogOut</a>
+        <a class="login-button" href="Profilo.jsp">Profilo</a>
+        <% } %>
+    </div>
+
+    <div class="carrello">
+        <a class="login-button" href="Carrello.jsp">Carrello</a>
+    </div>
+
+
 </div>
 
+
+
+
+
 <script>
-  $(document).ready(function() {
-    $('#hamburger').click(function() {
-      $('#navLinks').toggleClass('active');
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchInput = document.getElementById("searchInput");
+        var searchResults = document.createElement("div");
+        searchResults.setAttribute("id", "searchResults");
+        searchResults.classList.add("search-results");
+        document.body.appendChild(searchResults);
+
+        var navbar = document.querySelector(".navbar");
+        var hamburger = document.getElementById("hamburger");
+
+        hamburger.addEventListener("click", function() {
+            navbar.classList.toggle("responsive");
+
+            // Aggiungi o rimuovi una classe per gestire la visibilità degli elementi
+            document.body.classList.toggle("navbar-open");
+
+            // Chiudi i risultati della ricerca quando si apre il menu a tendina
+            clearSearchResults();
+        });
+
+        searchInput.addEventListener("input", function() {
+            var query = searchInput.value.trim();
+
+            if (query !== "") {
+                var url = "suggestProducts?query=" + encodeURIComponent(query);
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        displaySearchResults(data);
+                    })
+                    .catch(error => {
+                        console.error('Errore durante la richiesta:', error);
+                    });
+            } else {
+                clearSearchResults();
+            }
+        });
+
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+
+            if (results.length > 0) {
+                results.forEach(function(result) {
+                    var resultDiv = document.createElement("div");
+                    resultDiv.textContent = result;
+                    resultDiv.addEventListener("click", function() {
+                        // Gestisci il click su risultato (es. reindirizza alla pagina del prodotto)
+                        window.location.href = 'Product.jsp?nome=' + encodeURIComponent(result);
+                    });
+                    searchResults.appendChild(resultDiv);
+                });
+
+                searchResults.style.display = 'block';
+            } else {
+                showNoResultsMessage();
+            }
+        }
+
+        function showNoResultsMessage() {
+            searchResults.innerHTML = '<div class="no-results">Nessun prodotto trovato</div>';
+            searchResults.style.display = 'block';
+        }
+
+        function clearSearchResults() {
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!searchResults.contains(e.target) && e.target !== searchInput) {
+                clearSearchResults();
+            }
+        });
     });
-  });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchInput = document.getElementById("searchInput");
+        var searchResults = document.getElementById("searchResults");
+
+        searchInput.addEventListener("input", function() {
+            var query = searchInput.value.trim();
+
+            if (query !== "") {
+                var url = "suggestProducts?query=" + encodeURIComponent(query);
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        displaySearchResults(data);
+                    })
+                    .catch(error => {
+                        console.error('Errore durante la richiesta:', error);
+                    });
+            } else {
+                clearSearchResults();
+            }
+        });
+
+        function displaySearchResults(results) {
+            searchResults.innerHTML = '';
+
+            if (results.length > 0) {
+                results.forEach(function(result) {
+                    var resultDiv = document.createElement("div");
+
+                    // Crea un link <a> all'interno del div
+                    var resultLink = document.createElement("a");
+                    resultLink.textContent = result;
+                    resultLink.setAttribute("href", 'product?action=search&nome=' + encodeURIComponent(result));
+                    resultLink.style.textDecoration = "none"; // Rimuovi la sottolineatura se desiderato
+
+                    // Aggiungi l'evento click al link
+                    resultLink.addEventListener("click", function(event) {
+                        // Impedisci il comportamento predefinito del link (facoltativo, a seconda delle necessità)
+                        // event.preventDefault();
+
+                        // Reindirizza alla pagina del prodotto
+                        window.location.href = 'Product.jsp?nome=' + encodeURIComponent(result);
+                    });
+
+                    // Aggiungi il link come figlio del div
+                    resultDiv.appendChild(resultLink);
+
+                    // Aggiungi il div al contenitore dei risultati di ricerca
+                    searchResults.appendChild(resultDiv);
+                });
+
+                searchResults.style.display = 'block';
+            } else {
+                showNoResultsMessage();
+            }
+        }
+
+        function showNoResultsMessage() {
+            searchResults.innerHTML = '<div class="no-results">Nessun prodotto trovato</div>';
+            searchResults.style.display = 'block';
+        }
+
+        function clearSearchResults() {
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!searchResults.contains(e.target) && e.target !== searchInput) {
+                clearSearchResults();
+            }
+        });
+    });
+
+    // Funzione per la ricerca
+    function submitSearch(event) {
+        event.preventDefault(); // Previeni il comportamento predefinito del link
+
+        var searchInput = document.getElementById("searchInput");
+        var nome = searchInput.value.trim();
+
+        if (nome !== "") {
+            var url = "product?action=search&nome=" + encodeURIComponent(nome);
+            window.location.href = url;
+        }
+    }
+
 </script>
+
+
+<br><br><br>
+</body>
+</html>
