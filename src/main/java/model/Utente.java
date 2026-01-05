@@ -1,18 +1,42 @@
 package model;
 
-public abstract class Utente {
-    private String nome;
-    private String cognome;
-    private String email;
-    private String password;
+import java.sql.Date;
 
-    public Utente(){}
+public class Utente {
+    String email;
+    String nome;
+    String cognome;
+    String IBAN;
+    Date dataNascita;
+    String pass;
+    int IVA;
+    int Tipo_account;
 
-    public Utente(String nome, String cognome, String email, String password) {
-        this.nome = nome;
-        this.cognome = cognome;
+    public int getTipo_account() {
+        return Tipo_account;
+    }
+    public void setTipo_account(int x) {
+        Tipo_account=x;
+    }
+
+    public void setIBAN(String x) {
+        this.IBAN=x;
+    }
+    public String getIBAN() {
+        return this.IBAN;
+    }
+
+    public int getIVA() {
+        return IVA;
+    }
+    public void setIVA(int x) {
+        IVA=x;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
         this.email = email;
-        this.password = password;
     }
     public String getNome() {
         return nome;
@@ -26,17 +50,20 @@ public abstract class Utente {
     public void setCognome(String cognome) {
         this.cognome = cognome;
     }
-    public String getEmail() {
-        return email;
+
+    public Date getData() {
+        return dataNascita;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setData(Date x) {
+        this.dataNascita=x;
     }
-    public String getPassword() {
-        return password;
+
+
+    public String getPass() {
+        return pass;
     }
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 
 }

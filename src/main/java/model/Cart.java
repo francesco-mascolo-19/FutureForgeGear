@@ -1,43 +1,52 @@
 package model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import model.ItemCart;
+
+@Entity
+@NamedQueries({
+        @NamedQuery(name="TROVA_COSTUMER", query="SELECT c FROM Cart c WHERE c.userId = :userId"),
+        @NamedQuery(name="TROVA_ID", query="SELECT c FROM Cart c WHERE c.id= :id")
+})
 
 public class Cart {
+    @Id @GeneratedValue
+    private int id;
 
-    private List<Prodotto> products;
+    @OneToMany
+    private List<ItemCart> items;
+
+    private int userId;
 
     public Cart() {
-        products = new ArrayList<Prodotto>();
+        this.items = new ArrayList<ItemCart>();
+    }
+    public Cart(List<ItemCart> items, int userId) {
+        this.items = items;
+        this.userId = userId;
+    }
+    public int getId() {
+        return id;
     }
 
-    public void addProduct(Prodotto product) {
-        products.add(product);
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public void deleteProduct(Prodotto product) {
-        for(Prodotto prod : products) {
-            if(prod.getId() == product.getId()) {
-                products.remove(prod);
-                break;
-            }
-        }
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void deleteAllProduct() {
-        products.clear();
+    public List<ItemCart> getItems() {
+        return items;
     }
-    public List<Prodotto> getProducts() {
-        return  products;
+    public void setItems(List<ItemCart> items) {
+        this.items = items;
     }
-
-    public boolean presente(int productId) {
-        for (Prodotto p : products) {
-            if (p.getID()==(productId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
