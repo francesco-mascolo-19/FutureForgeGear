@@ -15,23 +15,6 @@ public class Catalogo implements CatalogoRemote {
     @PersistenceContext(unitName="FutureForgeGearPU")
     private EntityManager em;
 
-        /*
-    private EntityManagerFactory emf;
-    private EntityManager em;
-
-    public Catalogo() {
-        // Create EntityManagerFactory using the persistence unit name
-        emf = Persistence.createEntityManagerFactory("FutureForgeGearPU");
-        em = emf.createEntityManager();
-    }
-    */
-
-
-    //@PersistenceContext
-    //private EntityManager em;
-
-    //private EntityManagerFactory = Persistence.createEntityManagerFactory("myPersistenceUnit");
-    //private EntityManager em = emf.createEntityManager();
     @Override
     public void addProduct(Prodotto prodotto) {
         em.persist(prodotto);
@@ -50,6 +33,8 @@ public class Catalogo implements CatalogoRemote {
     @Override
     public List<Prodotto> getProducts() {
         TypedQuery<Prodotto> query= em.createNamedQuery("TROVA_TUTTI", Prodotto.class);
+        System.out.println("Prodotti");
+        System.out.println(query.getResultList());
         return query.getResultList();
     }
 
