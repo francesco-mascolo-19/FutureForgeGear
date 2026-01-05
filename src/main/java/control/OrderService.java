@@ -3,6 +3,7 @@ package control;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.Order;
 import model.Ordine;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Stateless
 public class OrderService implements OrderServiceRemote {
-    @Inject
+    @PersistenceContext(unitName = "FutureForgeGearDB")
     private EntityManager em;
 
     @Override
