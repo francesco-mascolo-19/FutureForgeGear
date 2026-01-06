@@ -10,6 +10,8 @@ import jakarta.persistence.EntityManager;
 import model.Prodotto;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import model.User.Cliente;
+import model.User.Utente;
 
 @Singleton
 @Startup
@@ -33,6 +35,7 @@ public class DatabasePopulator {
     Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, null,Categoria.FISSI);
     Prodotto p5=new Prodotto("Gaming Budget Intel i3 – GTX 1650", "Desktop entry-level perfetto per gaming leggero ed e-sports. Buon equilibrio tra prestazioni e prezzo, ideale per Fortnite, Valorant e simili.", 749.99, null ,Categoria.FISSI);
 
+    Utente cliente = new Utente("Francesco", "mascolo", "f.mascolo@gmail.com", "password", Ruolo.CLIENTE);
     // record
 
     @PostConstruct
@@ -44,6 +47,7 @@ public class DatabasePopulator {
         em.persist(p3);
         em.persist(p4);
         em.persist(p5);
+        em.persist(cliente);
     }
 
     @PreDestroy
@@ -53,6 +57,7 @@ public class DatabasePopulator {
         em.remove(p3);
         em.remove(p4);
         em.remove(p5);
+        em.remove(cliente);
         em.clear();
     }
 }
