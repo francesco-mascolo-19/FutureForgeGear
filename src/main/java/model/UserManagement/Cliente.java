@@ -6,24 +6,24 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue("CLIENTE")
 public class Cliente extends Utente{
-    private String indirizzo;
 
-    public Cliente( String indirizzo){
+    @Embedded
+    private Indirizzo indirizzo;
+
+    public Cliente(Indirizzo indirizzo){
         super();
         this.indirizzo = indirizzo;
     }
+
     public Cliente(){}
 
-    public String getIndirizzo() {
+    public Indirizzo getIndirizzo() {
         return indirizzo;
     }
 
-    public void setIndirizzo(String indirizzo) {
+    public void setIndirizzo(Indirizzo indirizzo) {
         this.indirizzo = indirizzo;
     }
-
-
-
 
 
 }
