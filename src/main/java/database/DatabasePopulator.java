@@ -1,17 +1,18 @@
 package database;
 
 import enumerativeTypes.Categoria;
+import enumerativeTypes.Ruolo;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.ejb.LocalBean;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.EntityManager;
-import model.Prodotto;
+import model.OrderManagement.Prodotto;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import model.User.Cliente;
-import model.User.Utente;
+import model.UserManagement.Cliente;
+import model.UserManagement.Utente;
 
 @Singleton
 @Startup
@@ -35,8 +36,8 @@ public class DatabasePopulator {
     Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, null,Categoria.FISSI);
     Prodotto p5=new Prodotto("Gaming Budget Intel i3 – GTX 1650", "Desktop entry-level perfetto per gaming leggero ed e-sports. Buon equilibrio tra prestazioni e prezzo, ideale per Fortnite, Valorant e simili.", 749.99, null ,Categoria.FISSI);
 
-    Utente cliente = new Utente("Francesco", "mascolo", "f.mascolo@gmail.com", "password", Ruolo.CLIENTE);
-    // record
+    // Parametri: nome, cognome, email, username, password, ruolo
+    Utente cliente = new Utente("Francesco", "Mascolo", "f.mascolo@gmail.com", "francesco_m", "password", Ruolo.CLIENTE);
 
     @PostConstruct
     public void populateDB(){
