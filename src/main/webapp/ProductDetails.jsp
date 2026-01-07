@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Base64" %>
-<%@ page import="java.util.*, model.Prodotto, model.Cart, model.immagine, model.ProductDao" %>
+<%@ page import="java.util.*, model.OrderManagement.Prodotto, model.OrderManagement.Cart, model.immagine, model.ProductDao" %>
 
 <%
     // Recupera l'ID del prodotto dalla query string

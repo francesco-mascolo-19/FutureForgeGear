@@ -1,6 +1,6 @@
 package remoteInterfaces;
 
-import model.Cart;
+import model.OrderManagement.Cart;
 
 
 import jakarta.ejb.Remote;

@@ -2,23 +2,22 @@ package model;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import enumerativeTypes.Categoria;
+import model.OrderManagement.Prodotto;
 
 public class ProductDao {
 
@@ -46,11 +45,18 @@ public class ProductDao {
             preparedStatement.setString(1, product.getDescrizione());
             preparedStatement.setDouble(2, product.getPrezzo());
             preparedStatement.setInt(3, product.getQuantita());
-            InputStream inputStream = new ByteArrayInputStream(product.getImg());
-            preparedStatement.setBinaryStream(4, inputStream, product.getImg().length);
-            preparedStatement.setString(6, product.getNome());
-            preparedStatement.setString(7, product.getCategoria());
-            preparedStatement.setDouble(8, product.getSconto());
+
+            // Immagine
+            byte[] imageBytes = product.getFoto();
+            InputStream inputStream = new ByteArrayInputStream(imageBytes);
+            preparedStatement.setBinaryStream(4, inputStream, imageBytes.length);
+
+            preparedStatement.setString(5, product.getNome());
+
+            // CORREZIONE: getCategoria() restituisce enum, usa .name() per ottenere la stringa
+            preparedStatement.setString(6, product.getCategoria().name());
+
+            preparedStatement.setDouble(7, product.getSconto());
             preparedStatement.executeUpdate();
         } finally {
             try {
@@ -95,17 +101,18 @@ public class ProductDao {
         try {
             connection = ds.getConnection();
             preparedStatement = connection.prepareStatement(insertSQL);
-            preparedStatement.setInt(1, product.getID());
+            preparedStatement.setInt(1, product.getId());
             preparedStatement.setInt(2, product.getQuantita());
             preparedStatement.setDouble(3, product.getPrezzo());
 
             preparedStatement.setString(4, product.getNome());
             preparedStatement.setString(5, product.getDescrizione());
-            preparedStatement.setString(6, product.getCategoria());
+            // CORREZIONE: getCategoria() restituisce enum, usa .name() per ottenere la stringa
+            preparedStatement.setString(6, product.getCategoria().name());
             preparedStatement.setDouble(7, product.getSconto());
 
-            InputStream inputStream = new ByteArrayInputStream(product.getImg());
-            preparedStatement.setBinaryStream(8, inputStream, product.getImg().length);
+            InputStream inputStream = new ByteArrayInputStream(product.getImageBytes());
+            preparedStatement.setBinaryStream(8, inputStream, product.getImageBytes().length);
 
             preparedStatement.executeUpdate();
         } finally {
@@ -219,12 +226,17 @@ public class ProductDao {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                bean.setID(rs.getInt("idProdotto"));
+                bean.setId(rs.getInt("idProdotto"));
                 bean.setNome(rs.getString("Nome"));
                 bean.setDescrizione(rs.getString("Descrizione"));
                 bean.setPrezzo(rs.getDouble("Prezzo"));
                 bean.setQuantita(rs.getInt("Quantita"));
-                bean.setCategoria(rs.getString("Categoria"));
+                // CORREZIONE: converti stringa in enum Categoria
+                String categoriaString = rs.getString("Categoria");
+                if (categoriaString != null) {
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    bean.setCategoria(categoria);
+                }
                 bean.setImg(rs.getBytes("Foto"));
                 bean.setSconto(rs.getDouble("Sconto"));
 
@@ -258,12 +270,17 @@ public class ProductDao {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                bean.setID(rs.getInt("idProdotto"));
+                bean.setId(rs.getInt("idProdotto"));
                 bean.setNome(rs.getString("Nome"));
                 bean.setDescrizione(rs.getString("Descrizione"));
                 bean.setPrezzo(rs.getDouble("Prezzo"));
                 bean.setQuantita(rs.getInt("Quantita"));
-                bean.setCategoria(rs.getString("Categoria"));
+                // CORREZIONE: converti stringa in enum Categoria
+                String categoriaString = rs.getString("Categoria");
+                if (categoriaString != null) {
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    bean.setCategoria(categoria);
+                }
                 bean.setImg(rs.getBytes("Foto"));
                 bean.setSconto(rs.getDouble("Sconto"));
 
@@ -362,12 +379,17 @@ public class ProductDao {
             while (rs.next()) {
                 Prodotto bean = new Prodotto();
 
-                bean.setID(rs.getInt("idProdotto"));
+                bean.setId(rs.getInt("idProdotto"));
                 bean.setNome(rs.getString("Nome"));
                 bean.setDescrizione(rs.getString("Descrizione"));
                 bean.setPrezzo(rs.getDouble("Prezzo"));
                 bean.setQuantita(rs.getInt("Quantita"));
-                bean.setCategoria(rs.getString("Categoria"));
+                // CORREZIONE: converti stringa in enum Categoria
+                String categoriaString = rs.getString("Categoria");
+                if (categoriaString != null) {
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    bean.setCategoria(categoria);
+                }
                 bean.setImg(rs.getBytes("Foto"));
                 bean.setSconto(rs.getDouble("Sconto"));
 
@@ -400,8 +422,8 @@ public class ProductDao {
             statement.setString(1, prodotto.getDescrizione());
             statement.setDouble(2, prodotto.getPrezzo());
             statement.setInt(3, prodotto.getQuantita());
-            statement.setString(5, prodotto.getNome());
-            statement.setInt(6, prodotto.getID());
+            statement.setString(4, prodotto.getNome());
+            statement.setInt(5, prodotto.getId());
 
             statement.executeUpdate();
         } finally {
@@ -435,12 +457,17 @@ public class ProductDao {
             while (rs.next()) {
                 Prodotto bean = new Prodotto();
 
-                bean.setID(rs.getInt("idProdotto"));
+                bean.setId(rs.getInt("idProdotto"));
                 bean.setNome(rs.getString("Nome"));
                 bean.setDescrizione(rs.getString("Descrizione"));
                 bean.setPrezzo(rs.getDouble("Prezzo"));
                 bean.setQuantita(rs.getInt("Quantita"));
-                bean.setCategoria(rs.getString("Categoria"));
+                // CORREZIONE: converti stringa in enum Categoria
+                String categoriaString = rs.getString("Categoria");
+                if (categoriaString != null) {
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    bean.setCategoria(categoria);
+                }
                 bean.setImg(rs.getBytes("Foto"));
                 bean.setSconto(rs.getDouble("Sconto"));
 
@@ -478,12 +505,17 @@ public class ProductDao {
             while (rs.next()) {
                 Prodotto bean = new Prodotto();
 
-                bean.setID(rs.getInt("idProdotto"));
+                bean.setId(rs.getInt("idProdotto"));
                 bean.setNome(rs.getString("Nome"));
                 bean.setDescrizione(rs.getString("Descrizione"));
                 bean.setPrezzo(rs.getDouble("Prezzo"));
                 bean.setQuantita(rs.getInt("Quantita"));
-                bean.setCategoria(rs.getString("Categoria"));
+                // CORREZIONE: converti stringa in enum Categoria
+                String categoriaString = rs.getString("Categoria");
+                if (categoriaString != null) {
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    bean.setCategoria(categoria);
+                }
                 bean.setImg(rs.getBytes("Foto"));
                 bean.setSconto(rs.getDouble("Sconto"));
 
@@ -534,12 +566,17 @@ public class ProductDao {
             while (rs.next()) {
                 Prodotto bean = new Prodotto();
 
-                bean.setID(rs.getInt("idProdotto"));
+                bean.setId(rs.getInt("idProdotto"));
                 bean.setNome(rs.getString("Nome"));
                 bean.setDescrizione(rs.getString("Descrizione"));
                 bean.setPrezzo(rs.getDouble("Prezzo"));
                 bean.setQuantita(rs.getInt("Quantita"));
-                bean.setCategoria(rs.getString("Categoria"));
+                // CORREZIONE: converti stringa in enum Categoria
+                String categoriaString = rs.getString("Categoria");
+                if (categoriaString != null) {
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    bean.setCategoria(categoria);
+                }
                 bean.setImg(rs.getBytes("Foto"));
                 bean.setSconto(rs.getDouble("Sconto"));
 

@@ -4,10 +4,9 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import enumerativeTypes.Categoria;
-import model.Prodotto;
+import model.OrderManagement.Prodotto;
 import remoteInterfaces.CatalogoRemote;
 import jakarta.persistence.PersistenceContext;
-import jakarta.annotation.PostConstruct;
 
 import java.util.List;
 

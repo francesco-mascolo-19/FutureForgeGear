@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import model.ProductDao;
+
+import model.OrderManagement.Prodotto;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

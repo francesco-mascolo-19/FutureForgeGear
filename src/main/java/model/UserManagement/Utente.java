@@ -1,4 +1,4 @@
-package model.User;
+package model.UserManagement;
 
 import jakarta.persistence.*;
 import enumerativeTypes.Ruolo;
@@ -24,6 +24,12 @@ public class Utente {
     private String email;
     private String password;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ruolo", insertable = false, updatable = false)
+    private Ruolo ruolo;
 
     @Id @GeneratedValue
     private Long id;
