@@ -252,7 +252,7 @@
         <div></div>
     </div>
 
-    <a href="Home.jsp" class="logo-link">FutureForgeGear</a>
+    <a href="../../src/main/java/webapp/Home.jsp" class="logo-link">FutureForgeGear</a>
 
     <div >
         <nav>
@@ -264,8 +264,8 @@
                     <div class="dropdown-content">
                         <a href="Product.jsp?categoria=Fissi">Fissi</a>
                         <a href="Product.jsp?categoria=Portatili">Portatili</a>
-                        <a href="Product.jsp?categoria=Periferiche">Pericheriche</a>
-                        <a href="tuttiProdotti.jsp">All</a>
+                        <a href="Product.jsp?categoria=Periferiche">Periferiche</a>
+                        <a href="../../src/main/java/webapp/tuttiProdotti.jsp">All</a>
                     </div>
                 </li>
             </ul>
@@ -287,17 +287,17 @@
 
     </div>
 
-    <div class="login">
-        <% if (session.getAttribute("Email") == null) { %>
-        <a class="login-button" href="pagina_accesso.jsp">Login</a>
-        <% } else { %>
-        <a class="login-button" href="logout">LogOut</a>
-        <a class="login-button" href="Profilo.jsp">Profilo</a>
-        <% } %>
-    </div>
+    <%-- <div class="login">
+          <% if (session.getAttribute("Email") == null) { %>
+          <a class="login-button" href="pagina_accesso.jsp">Login</a>
+          <% } else { %>
+          <a class="login-button" href="logout">LogOut</a>
+          <a class="login-button" href="Profilo.jsp">Profilo</a>
+          <% } %>
+      </div>  --%>
 
     <div class="carrello">
-        <a class="login-button" href="Carrello.jsp">Carrello</a>
+        <a class="login-button" href="carrello.jsp">Carrello</a>
     </div>
 
 
@@ -472,6 +472,8 @@
             window.location.href = url;
         }
     }
+
+
 
 </script>
 
