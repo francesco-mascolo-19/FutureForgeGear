@@ -1,5 +1,9 @@
 package model;
 
+import enumerativeTypes.Categoria;
+import model.OrderManagement.Ordine;
+import model.OrderManagement.Prodotto;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -192,12 +196,17 @@ public class OrdineDAO {
 
             while (rs.next()) {
                 Prodotto prodotto = new Prodotto();
-                prodotto.setID(rs.getInt("idProdotto"));
+                prodotto.setId(rs.getInt("idProdotto"));
                 prodotto.setQuantita(rs.getInt("Quantita"));
                 prodotto.setPrezzo(rs.getDouble("Prezzo"));
                 prodotto.setNome(rs.getString("Nome"));
                 prodotto.setDescrizione(rs.getString("Descrizione"));
-                prodotto.setCategoria(rs.getString("Categoria"));
+
+                // Conversione da String a Categoria enum
+                String categoriaString = rs.getString("Categoria");
+                Categoria categoria = Categoria.valueOf(categoriaString);
+                prodotto.setCategoria(categoria);
+
                 prodotto.setSconto(rs.getDouble("Sconto"));
                 prodotto.setImg(rs.getBytes("Foto"));
 

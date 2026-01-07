@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page contentType="text/html; charset=UTF-8" import="java.util.*,control.*,model.*"%>
-<%@ page import="model.User.Utente" %>
+<%@ page import="model.UserManagement.Utente" %>
+<%@ page import="model.OrderManagement.Ordine" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 
 
 <%

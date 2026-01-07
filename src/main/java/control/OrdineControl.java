@@ -1,6 +1,5 @@
 package control;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -11,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import model.Ordine;
+import model.OrderManagement.Ordine;
 import model.OrdineDAO;
-import model.Prodotto;
+import model.OrderManagement.Prodotto;
 
 
 /**

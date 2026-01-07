@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.ProductDao" %>
-<%@ page import="model.Prodotto" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 <%@ page contentType="text/html; charset=UTF-8" import="java.util.*, control.*, model.*" %>
 
 
@@ -16,12 +16,13 @@
     ProductDao productDAO = new ProductDao();
     List<Prodotto> prodotti = productDAO.doRetrieveByCategoria(categoria);
 
-// Verifica se la lista prodotti è vuota o nulla
+    // Verifica se la lista prodotti è vuota o nulla
     if (prodotti.isEmpty()) {
-        out.println("<p>Nessun prodotto disponibile per la categoria: " + categoria + "</p>");
+%>
+    <p>Nessun prodotto disponibile per la categoria: <%= categoria %></p>
+<%
     }
 %>
-
 
 <!DOCTYPE html>
 <html lang="it">
@@ -50,12 +51,11 @@
                 <img src='data:image/jpg;base64,<%= base64Image %>' alt='Immagine Prodotto' style='max-width:100px;'>
             </a>
         </li>
-        <% }
-        } else {
-            out.println("<li>Nessun prodotto disponibile</li>");
-        }
-        %>
+        <% } %>
     </ul>
+    <% } else { %>
+    <p>Nessun prodotto disponibile per la categoria: <%= categoria %></p>
+    <% } %>
 </div>
 
 <%@ include file="footer.jsp" %>
