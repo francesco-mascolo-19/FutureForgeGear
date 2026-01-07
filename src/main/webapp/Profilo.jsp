@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Ordine" %>
-<%@ page import="model.User.Utente" %>
+<%@ page import="model.OrderManagement.Ordine" %>
+<%@ page import="model.UserManagement.Utente" %>
 <%@ page import="model.UtenteDao" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.*" %>
 <%@ page import="model.*" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 
 <%
     OrdineDAO ordineDao = new OrdineDAO();

@@ -5,6 +5,8 @@
     int numProdotti=0;
 %>
 <%@ page contentType="text/html; charset=UTF-8" import="java.util.*,model.*"%>
+<%@ page import="model.OrderManagement.Cart" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>

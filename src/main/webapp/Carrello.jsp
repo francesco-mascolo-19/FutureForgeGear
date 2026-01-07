@@ -6,6 +6,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <%@ page contentType="text/html; charset=UTF-8" import="java.util.*, model.*"%>
+<%@ page import="model.OrderManagement.Cart" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
