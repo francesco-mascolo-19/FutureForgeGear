@@ -1,22 +1,15 @@
-package control;
-
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.Order;
 import model.Ordine;
 import model.Prodotto;
-import enumerativeTypes.Stato;
-import remoteInterfaces.OrderServiceRemote;
-
-import java.sql.Date;
-import java.util.List;
+@@ -14,60 +15,60 @@
 
 @Stateless
 public class OrderService implements OrderServiceRemote {
-    @PersistenceContext(unitName = "FutureForgeGearDB")
+    @PersistenceContext(unitName = "FutureForgeGearPU")
     private EntityManager em;
 
     @Override
@@ -31,7 +24,7 @@ public class OrderService implements OrderServiceRemote {
 
     @Override
     public List<Ordine> findAllOrders() {
-        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_ORDINI", Ordine.class);
+        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_TUTTI", Ordine.class);
         return query.getResultList();
     }
 
