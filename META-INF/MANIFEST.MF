@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
-Main-Class:
+Created-By: IntelliJ IDEA
+Built-By:
+Build-Jdk: Oracle OpenJDK 21
