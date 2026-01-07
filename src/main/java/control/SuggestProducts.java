@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
 import com.google.gson.Gson;
-import model.Prodotto;
 
 @WebServlet("/suggestProducts")
 public class SuggestProducts extends HttpServlet {

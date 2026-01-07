@@ -1,14 +1,19 @@
+package service;
+
 import jakarta.ejb.Stateless;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import model.Ordine;
-import model.Prodotto;
-@@ -14,60 +15,60 @@
+import model.OrderManagement.Ordine;
+import enumerativeTypes.Stato;
+import remoteInterfaces.OrderServiceRemote;
+
+import java.sql.Date;
+import java.util.List;
 
 @Stateless
 public class OrderService implements OrderServiceRemote {
+
     @PersistenceContext(unitName = "FutureForgeGearPU")
     private EntityManager em;
 
@@ -19,12 +24,13 @@ public class OrderService implements OrderServiceRemote {
 
     @Override
     public Ordine findOrderById(int id) {
-        return em.find(Ordine.class, id);
+        // Converti int a Long per la ricerca
+        return em.find(Ordine.class, (long) id);
     }
 
     @Override
     public List<Ordine> findAllOrders() {
-        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_TUTTI", Ordine.class);
+        TypedQuery<Ordine> query = em.createNamedQuery("Ordine.TROVA_TUTTI", Ordine.class);
         return query.getResultList();
     }
 
@@ -35,33 +41,36 @@ public class OrderService implements OrderServiceRemote {
 
     @Override
     public void removeOrder(int id) {
-        em.remove(em.find(Ordine.class, id));
+        Ordine order = em.find(Ordine.class, (long) id);
+        if (order != null) {
+            em.remove(order);
+        }
     }
 
     @Override
     public List<Ordine> findOrdersByCostumer(int userId) {
-        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_PER_UTENTE", Ordine.class);
-        query.setParameter("userId", userId);
+        TypedQuery<Ordine> query = em.createNamedQuery("Ordine.TROVA_PER_UTENTE", Ordine.class);
+        query.setParameter("userId", (long) userId);
         return query.getResultList();
     }
 
     @Override
     public List<Ordine> findByPrize(Double prezzo) {
-        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_PER_TOTALE", Ordine.class);
+        TypedQuery<Ordine> query = em.createNamedQuery("Ordine.TROVA_PER_TOTALE", Ordine.class);
         query.setParameter("totale", prezzo);
         return query.getResultList();
     }
 
     @Override
     public List<Ordine> findByDate(Date date) {
-        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_PER_DATA", Ordine.class);
+        TypedQuery<Ordine> query = em.createNamedQuery("Ordine.TROVA_PER_DATA", Ordine.class);
         query.setParameter("date", date);
         return query.getResultList();
     }
 
     @Override
-    public List<Ordine> findByState(Stato stato){
-        TypedQuery<Ordine> query=em.createNamedQuery("TROVA_PER_STATO", Ordine.class);
+    public List<Ordine> findByState(Stato stato) {
+        TypedQuery<Ordine> query = em.createNamedQuery("Ordine.TROVA_PER_STATO", Ordine.class);
         query.setParameter("stato", stato);
         return query.getResultList();
     }

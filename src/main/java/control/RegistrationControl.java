@@ -2,8 +2,6 @@ package control;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,8 +14,6 @@ import com.google.gson.Gson;
 
 import model.Utente;
 import model.UtenteDao;
-import model.Ordine;
-import model.OrdineDAO;
 
 /**
  * Servlet implementation class RegistrationControl

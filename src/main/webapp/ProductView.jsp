@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Base64" %>
 <%@ page import="model.*" %>
-<%@ page import="model.Cart" %>
+<%@ page import="model.OrderManagement.Cart" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 
 <%
     // Recupera il parametro "nome" dalla query string e sanifica il valore
