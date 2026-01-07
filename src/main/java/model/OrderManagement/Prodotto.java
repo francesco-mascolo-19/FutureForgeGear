@@ -147,8 +147,6 @@ public class Prodotto implements Serializable {
         return this.image; // Assumendo che 'image' sia un campo di tipo byte[]
     }
 
-
-
     public void setImageFromIcon(ImageIcon icon) {
         if (icon != null) {
             try {
@@ -159,5 +157,11 @@ public class Prodotto implements Serializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public String toString(){
+        return "Prodotto: [ Id:"+this.id+", Nome:"+this.nome+", Descrizione:"+this.descrizione+
+                ", Prezzo:"+this.prezzo+", Categoria:"+this.categoria+"]";
     }
 }
