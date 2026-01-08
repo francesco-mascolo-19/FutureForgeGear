@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 @NamedQueries({
         @NamedQuery(name = "TROVA_TUTTI", query = "SELECT p FROM Prodotto p"),
+        @NamedQuery(name = "TROVA_IN_CATALOGO", query = "SELECT p FROM Prodotto p WHERE p.inCatalogo=true"),
         @NamedQuery(name = "TROVA_PER_ID", query = "SELECT p FROM Prodotto p WHERE p.id = :ID"),
         @NamedQuery(name = "TROVA_PER_PREZZO_MINORE", query = "SELECT p FROM Prodotto p WHERE p.prezzo <= :prezzo"),
         @NamedQuery(name = "TROVA_PER_PREZZO_MAGGIORE", query = "SELECT p FROM Prodotto p WHERE p.prezzo >= :prezzo"),
@@ -19,7 +20,6 @@ import java.io.Serializable;
         @NamedQuery(name = "TROVA_PER_NOME", query = "SELECT p FROM Prodotto p WHERE p.nome = :nome")
 })
 @Entity
-@Table(name = "Prodotto") // Specifica il nome della tabella nel DB
 public class Prodotto implements Serializable {
 
     public static final String TROVA_PER_ID = "Product.findById";
@@ -31,79 +31,78 @@ public class Prodotto implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name = "idProdotto") // Mappa alla colonna corretta
     private int id;
-
-    @Column(name = "Nome")
     private String nome;
-
-    @Column(name = "Descrizione")
     private String descrizione;
-
-    @Column(name = "Prezzo")
     private Double prezzo;
-
-    @Column(name = "Quantita")
-    private Integer quantita;
-
-    @Column(name = "Sconto")
-    private Double sconto;
-
-    @Lob
-    @Column(name = "Foto")
-    private byte[] foto;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "Categoria")
-    private Categoria categoria;
+    private int disponibilita;
 
     //private ImageIcon image;
-    @Lob
-    @Column(name = "image", columnDefinition = "LONGBLOB")
-    private byte[] image;
+    private Categoria categoria;
+    private boolean inCatalogo;
 
-    // Costruttori
     public Prodotto() {}
 
-    public Prodotto(String nome, String descrizione, Double prezzo, byte[] foto, Categoria categoria) {
+    public Prodotto(String nome, String descrizione, Double prezzo,/*ImageIcon image,*/ Categoria categoria, int disponibilita,
+                    boolean inCatalogo){
         this.nome = nome;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
-        this.foto = foto;
+        //this.image = image;
         this.categoria = categoria;
+        this.disponibilita = disponibilita;
+        this.inCatalogo = inCatalogo;
     }
 
-    // Getter e Setter
-    public String getNome() {
+    public String getNome(){
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(String nome){
         this.nome = nome;
     }
 
-    public Double getPrezzo() {
+    public Double getPrezzo(){
         return prezzo;
     }
-
-    public void setPrezzo(Double prezzo) {
+    public void setPrezzo(Double prezzo){
         this.prezzo = prezzo;
     }
 
-    public int getId() {
+    /*public ImageIcon getImage() {
+        //return image;
+    //}
+    //public void setImage(ImageIcon image) {
+        this.image = image;
+    }*/
+
+    public int getId(){
         return id;
     }
-
-    public void setId(int id) {
+    public void setId(int id){
         this.id = id;
     }
-
-    public String getDescrizione() {
+    public String getDescrizione(){
         return descrizione;
     }
-
-    public void setDescrizione(String descrizione) {
+    public void setDescrizione(String descrizione){
         this.descrizione = descrizione;
+    }
+
+    public int getDisponibilita(){
+        return disponibilita;
+    }
+
+    public void setDisponibilita(int disponibilita){
+        this.disponibilita = disponibilita;
+    }
+
+    public boolean isInCatalogo(){
+        return inCatalogo;
+    }
+
+    public void setInCatalogo(boolean inCatalogo){
+        this.inCatalogo = inCatalogo;
     }
 
     public Categoria getCategoria() {
@@ -114,54 +113,17 @@ public class Prodotto implements Serializable {
         this.categoria = categoria;
     }
 
-    // Nuovi getter e setter per i campi mancanti
-    public Integer getQuantita() {
-        return quantita;
-    }
-
-    public void setQuantita(Integer quantita) {
-        this.quantita = quantita;
-    }
-
-    public Double getSconto() {
-        return sconto;
-    }
-
-    public void setSconto(Double sconto) {
-        this.sconto = sconto;
-    }
-
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
-
-    public void setImg(byte[] foto) { // Per compatibilità con il DAO
-        this.foto = foto;
-    }
-
-    public byte[] getImageBytes() {
-        return this.image; // Assumendo che 'image' sia un campo di tipo byte[]
-    }
-
-    public void setImageFromIcon(ImageIcon icon) {
-        if (icon != null) {
-            try {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ImageIO.write((ImageIO.read((File) icon.getImage().getSource())), "png", bos);
-                this.image = bos.toByteArray();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
-    public String toString(){
-        return "Prodotto: [ Id:"+this.id+", Nome:"+this.nome+", Descrizione:"+this.descrizione+
-                ", Prezzo:"+this.prezzo+", Categoria:"+this.categoria+"]";
+    public String toString() {
+        return "Prodotto{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", prezzo=" + prezzo +
+                ", categoria=" + categoria +
+                ", disponibilita=" + disponibilita +
+                ", inCatalogo=" + inCatalogo +
+                '}';
     }
 }
+
