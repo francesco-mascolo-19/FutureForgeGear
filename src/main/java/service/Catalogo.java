@@ -33,7 +33,7 @@ public class Catalogo implements CatalogoRemote {
     @Override
     public List<Prodotto> getProducts() {
         System.out.println(em);
-        TypedQuery<Prodotto> query= em.createNamedQuery("TROVA_TUTTI", Prodotto.class);
+        TypedQuery<Prodotto> query= em.createNamedQuery("TROVA_IN_CATALOGO", Prodotto.class);
         System.out.println("Prodotti");
         System.out.println(query.getResultList());
         return query.getResultList();
