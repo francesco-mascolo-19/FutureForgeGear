@@ -245,12 +245,6 @@
     });
 
 
-
-
-
-
-
-
     // Funzione per scorrere automaticamente il carosello
     $(document).ready(function() {
         var currentPosition = 0;
@@ -338,4 +332,6 @@
 
 
 </body>
+
+
 </html>
