@@ -12,7 +12,11 @@ import model.OrderManagement.Prodotto;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import model.UserManagement.Cliente;
+import model.UserManagement.Fornitore;
 import model.UserManagement.Utente;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Singleton
 @Startup
@@ -30,6 +34,18 @@ public class DatabasePopulator {
     @PersistenceContext(unitName = "FutureForgeGearPU")
     private EntityManager em;
 
+    // Creazione di un admin
+    /*Admin admin = new Admin();
+        admin.setNome("Admin User");
+        admin.setEmail("admin@example.com");
+        admin.setPassword("admin123");
+        admin.setPermessi("GESTIONE_COMPLETA");
+        admin.setRuolo("ADMIN"); */
+    // record
+
+    Utente utenteFornitore1=new Utente("Mario", "Rossi", "mario.rossi@example.com", "mrossi", "abc", Ruolo.FORNITORE);
+    Fornitore fornitore1 = new Fornitore(utenteFornitore1);
+
     Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  /*null,*/ Categoria.FISSI, 3, true);
     Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,/*null,*/Categoria.FISSI, 5, true);
     Prodotto p3=new Prodotto("Workstation Creativa Ryzen 9", "Potente workstation progettata per editing video, rendering 3D e grafica professionale. Elevate prestazioni multi-core e memoria ad alta velocità.", 1799.9, /*null,*/Categoria.FISSI, 2, true);
@@ -43,6 +59,14 @@ public class DatabasePopulator {
     public void populateDB(){
         System.out.println("HO INIZIATO IL POPOLAMENTOOOOOOOOO!! \n");
         System.out.println(em);
+
+        em.createQuery("DELETE FROM Prodotto p").executeUpdate();
+        em.createQuery("DELETE FROM Fornitore f").executeUpdate();
+
+        // Aggiungi i prodotti alla lista del fornitore
+        fornitore1.setProdottiForniti(new ArrayList<>(Arrays.asList(p1, p2, p3, p4)));
+
+        em.persist(fornitore1);
         em.persist(p1);
         em.persist(p2);
         em.persist(p3);
@@ -58,6 +82,7 @@ public class DatabasePopulator {
         em.remove(p3);
         em.remove(p4);
         em.remove(p5);
+        em.remove(fornitore1);
         em.remove(cliente);
         em.clear();
     }

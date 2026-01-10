@@ -1,6 +1,7 @@
 package model.UserManagement;
 
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 
 @Entity

@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.OrderManagement.Prodotto;
+import model.UserManagement.Fornitore;
 import remoteInterfaces.CatalogoRemote;
-import service.Catalogo;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -23,22 +23,17 @@ public class CatalogoServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        if (catalogo == null) {
-            try {
-                InitialContext ctx = new InitialContext();
-                catalogo = (Catalogo) ctx.lookup("java:app/FutureForgeGear/Catalogo");
-            } catch (NamingException e) {
-                throw new ServletException("Failed to lookup Catalogo EJB", e);
-            }
+        System.out.println("Catalogo: \n");
+        List<Prodotto> prodotti=catalogo.getProducts();
+        System.out.println(prodotti);
+
+        for(Prodotto p:prodotti){
+            System.out.println(p);
         }
 
-        System.out.println("Catalogo "+catalogo);
-        List<Prodotto> prodotti = catalogo.getProducts();
-        for( Prodotto p : prodotti ) {
-            System.out.println(p.toString());
-        }
         request.setAttribute("prodotti", prodotti);
         request.getRequestDispatcher("tuttiProdotti.jsp").forward(request, response);
-    }
 
+
+    }
 }
