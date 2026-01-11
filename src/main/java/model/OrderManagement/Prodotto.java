@@ -118,6 +118,8 @@ public class Prodotto implements Serializable {
                 ", categoria=" + categoria +
                 ", disponibilita=" + disponibilita +
                 ", inCatalogo=" + inCatalogo +
+                ", fornitore =" + (fornitore != null ?
+                fornitore.toString() : "Nessun fornitore") +
                 '}';
     }
 
