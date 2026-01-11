@@ -44,6 +44,14 @@ public class Fornitore extends Utente implements Serializable {
         this.prodottiForniti = prodottiForniti;
     }
 
+    public void addProdotto(Prodotto prodotto){
+        prodottiForniti.add(prodotto);
+    }
+
+    public void removeProdotto(Prodotto prodotto){
+        prodottiForniti.remove(prodotto);
+    }
+
     @Override
     public String toString() {
         return super.toString();

@@ -8,6 +8,8 @@ import model.OrderManagement.Prodotto;
 import remoteInterfaces.CatalogoRemote;
 import jakarta.persistence.PersistenceContext;
 
+import model.UserManagement.Fornitore;
+
 import java.util.List;
 
 @Stateless(name = "Catalogo")//, mappedName = "java:app/FutureForgeGear/Catalogo")
