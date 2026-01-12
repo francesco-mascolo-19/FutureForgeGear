@@ -5,6 +5,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import model.OrderManagement.Prodotto;
+import model.RequestManagement.ProductRequest;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,11 +19,6 @@ public class Fornitore extends Utente implements Serializable {
     private List<Prodotto> prodottiForniti;
 
     public Fornitore(){}
-
-    public Fornitore(List<Prodotto> prodottiForniti){
-        super();
-        this.prodottiForniti = prodottiForniti;
-    }
 
     // Costruttore che copia i dati da un Utente
     public Fornitore(Utente utente) {

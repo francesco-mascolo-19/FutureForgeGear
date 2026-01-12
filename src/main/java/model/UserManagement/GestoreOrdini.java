@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import model.OrderManagement.Ordine;
 import model.OrderManagement.Prodotto;
+import enumerativeTypes.Stato;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,10 +16,7 @@ import java.util.List;
 @DiscriminatorValue("GESTOREORDINI")
 public class GestoreOrdini extends Utente implements Serializable {
 
-    /*
-    @OneToMany(mappedBy = "gestoreordini", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ordine> ordini;
-     */
+
 
     private List<Integer> ordiniID;
 
@@ -67,5 +65,9 @@ public class GestoreOrdini extends Utente implements Serializable {
     public GestoreOrdini(Utente utente) {
         super(utente.getNome(), utente.getCognome(), utente.getEmail(), utente.getUsername(), utente.getPassword(), utente.getRuolo());
         this.ordiniID = new ArrayList<>();
+    }
+
+    public void cambiaStatoOrdine(Ordine ordine, Stato stato){
+        ordine.setStato(stato);
     }
 }
