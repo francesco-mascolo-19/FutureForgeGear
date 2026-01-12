@@ -1,9 +1,7 @@
 package model.UserManagement;
+import java.io.Serializable;
 
-import jakarta.persistence.Embeddable;
-
-@Embeddable
-public class Indirizzo {
+public class Indirizzo implements Serializable {
 
     private String stato;
     private String provincia;
