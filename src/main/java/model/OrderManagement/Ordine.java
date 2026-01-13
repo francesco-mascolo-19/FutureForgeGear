@@ -1,207 +1,95 @@
 package model.OrderManagement;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import enumerativeTypes.Stato;
 import jakarta.persistence.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-@Entity
-@Table(name = "Ordine")
+import java.io.Serializable;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+
 @NamedQueries({
-        @NamedQuery(name = "Ordine.TROVA_TUTTI", query = "SELECT o FROM Ordine o"),
-        @NamedQuery(name = "Ordine.TROVA_PER_UTENTE", query = "SELECT o FROM Ordine o WHERE o.emailCliente = :emailCliente"),
-        @NamedQuery(name = "Ordine.TROVA_PER_TOTALE", query = "SELECT o FROM Ordine o WHERE o.totale = :totale"),
-        @NamedQuery(name = "Ordine.TROVA_PER_DATA", query = "SELECT o FROM Ordine o WHERE o.dataOrdine = :data"),
-        @NamedQuery(name = "Ordine.TROVA_PER_STATO", query = "SELECT o FROM Ordine o WHERE o.stato = :stato")
+        @NamedQuery(name="Ordine.TROVA_TUTTI", query="SELECT o FROM Ordine o"),
+        @NamedQuery(name="Ordine.TROVA_PER_ID", query="SELECT o FROM Ordine o WHERE o.id = :id "),
+        @NamedQuery(name="Ordine.TROVA_PER_UTENTE", query="SELECT o FROM Ordine o WHERE o.userId = :userId"),
+        @NamedQuery(name="Ordine.TROVA_PER_DATA", query="SELECT o FROM Ordine o WHERE o.date =:date "),
+        @NamedQuery(name="Ordine.TROVA_PER_STATO", query="SELECT o FROM Ordine o WHERE o.stato =:stato "),
+        @NamedQuery(name="Ordine.TROVA_PER_TOTALE", query="SELECT o FROM Ordine o WHERE o.totale = :totale")
 })
-public class Ordine {
+@Entity
+public class Ordine implements Serializable {
+    @Id @GeneratedValue
+    private Long id;
+    private double totale=0.0;
+    private Long userId;
+    private LocalDateTime date;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_ORDINE")
-    private int idOrdine;
+    @Enumerated(EnumType.STRING)
+    private Stato stato;
 
-    @Column(name = "indirizzo")
-    private String indirizzo;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> items;
 
-    @Column(name = "IVA_cliente")
-    private int ivaCliente;
-
-    @Column(name = "dataOrdine")
-    @Temporal(TemporalType.DATE)
-    private Date dataOrdine;
-
-    @Column(name = "totale")
-    private double totale;
-
-    @Column(name = "stato")
-    private String stato;
-
-    @Column(name = "numeroProdotti")
-    private int numeroProdotti;
-
-    @Column(name = "EmailCliente")
-    private String emailCliente;
-
-    @Column(name = "citta")
-    private String citta;
-
-    @Column(name = "CAP")
-    private int cap;
-
-    @Column(name = "provincia")
-    private String provincia;
-
-    // Costruttori
-    public Ordine() {
-    }
-
-    public Ordine(String indirizzo, int ivaCliente, Date dataOrdine, double totale,
-                  String stato, int numeroProdotti, String emailCliente,
-                  String citta, int cap, String provincia) {
-        this.indirizzo = indirizzo;
-        this.ivaCliente = ivaCliente;
-        this.dataOrdine = dataOrdine;
+    public Ordine() {}
+    public Ordine(Long userId, Double totale, List<ItemCartDTO> items) {
         this.totale = totale;
-        this.stato = stato;
-        this.numeroProdotti = numeroProdotti;
-        this.emailCliente = emailCliente;
-        this.citta = citta;
-        this.cap = cap;
-        this.provincia = provincia;
+        this.userId = userId;
+        this.date = LocalDateTime.now();
+        this.stato = Stato.PREPARATION;
+        this.items = serializeItems(items);
     }
 
-    // Getter e Setter (standardizzati)
-    public int getIdOrdine() {
-        return idOrdine;
+    // Metodo per serializzare i DTO in JSON
+    public List<String> serializeItems(List<ItemCartDTO> items) {
+        List<String> serializedItems = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();  // Usa Jackson per la serializzazione JSON
+        try {
+            for (ItemCartDTO item : items) {
+                String json = objectMapper.writeValueAsString(item);
+                serializedItems.add(json);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return serializedItems;
     }
 
-    public void setIdOrdine(int idOrdine) {
-        this.idOrdine = idOrdine;
+    public Long getId() {
+        return id;
     }
-
-    public String getIndirizzo() {
-        return indirizzo;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    public void setIndirizzo(String indirizzo) {
-        this.indirizzo = indirizzo;
-    }
-
-    public int getIvaCliente() {
-        return ivaCliente;
-    }
-
-    public void setIvaCliente(int ivaCliente) {
-        this.ivaCliente = ivaCliente;
-    }
-
-    public Date getDataOrdine() {
-        return dataOrdine;
-    }
-
-    public void setDataOrdine(Date dataOrdine) {
-        this.dataOrdine = dataOrdine;
-    }
-
     public double getTotale() {
         return totale;
     }
-
     public void setTotale(double totale) {
         this.totale = totale;
     }
-
-    public String getStato() {
+    public Long getUserId() {
+        return userId;
+    }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    public LocalDateTime getDate() {
+        return date;
+    }
+    public List<String> getItems(){
+        return items;
+    }
+    public void setItems(List<String> items){
+        this.items = items;
+    }
+    public Stato getStato() {
         return stato;
     }
-
-    public void setStato(String stato) {
+    public void setStato(Stato stato) {
         this.stato = stato;
     }
 
-    public int getNumeroProdotti() {
-        return numeroProdotti;
-    }
-
-    public void setNumeroProdotti(int numeroProdotti) {
-        this.numeroProdotti = numeroProdotti;
-    }
-
-    public String getCitta() {
-        return citta;
-    }
-
-    public void setCitta(String citta) {
-        this.citta = citta;
-    }
-
-    public int getCap() {
-        return cap;
-    }
-
-    public void setCap(int cap) {
-        this.cap = cap;
-    }
-
-    public String getProvincia() {
-        return provincia;
-    }
-
-    public void setProvincia(String provincia) {
-        this.provincia = provincia;
-    }
-
-    // Getter e Setter legacy (per compatibilità)
-    public int getNumeroOrdine() {
-        return idOrdine;
-    }
-
-    public void setNumeroOrdine(int numeroOrdine) {
-        this.idOrdine = numeroOrdine;
-    }
-
-    public int getIVA_cliente() {
-        return ivaCliente;
-    }
-
-    public void setIVA_cliente(int IVA) {
-        this.ivaCliente = IVA;
-    }
-
-    public Date getData() {
-        return dataOrdine;
-    }
-
-    public void setData(Date data) {
-        this.dataOrdine = data;
-    }
-
-    public int getCAP() {
-        return cap;
-    }
-
-    public void setCAP(int x) {
-        this.cap = x;
-    }
-
-    public String getEmailCliente() {
-        return emailCliente;
-    }
-
-    public void setEmailCliente(String x) {
-        this.emailCliente = x;
-    }
-
-    @Override
-    public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String dataFormattata = dataOrdine != null ? dateFormat.format(dataOrdine) : "N/A";
-        return "Ordine{" +
-                "idOrdine=" + idOrdine +
-                ", dataOrdine=" + dataFormattata +
-                ", totale=" + totale +
-                ", stato='" + stato + '\'' +
-                ", emailCliente='" + emailCliente + '\'' +
-                '}';
-    }
 }

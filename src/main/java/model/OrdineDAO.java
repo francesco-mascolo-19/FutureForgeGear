@@ -1,7 +1,7 @@
 package model;
 
 import enumerativeTypes.Categoria;
-import model.OrderManagement.Ordine;
+import model.OrderManagement.Ordine; // Questa è la tua Entity JPA
 import model.OrderManagement.Prodotto;
 
 import java.sql.Connection;
@@ -37,7 +37,8 @@ public class OrdineDAO {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Ordine> ordini = new ArrayList<>();
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE Email_cliente = ?";
+        // Suppongo che la tua tabella abbia un campo per l'email dell'utente
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE Email_cliente = ? ORDER BY data DESC";
 
         try {
             connection = ds.getConnection();
@@ -47,35 +48,8 @@ public class OrdineDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-
-                int id = rs.getInt("id_ordine");
-                String indirizzo= rs.getString("indirizzo");
-                String citta= rs.getString("citta");
-                String provincia= rs.getString("provincia");
-                int cap = rs.getInt("CAP");
-                double totale= rs.getDouble("totale");
-                String stato = rs.getString("stato");
-                int numeroProdotti = rs.getInt("numero_prodotti");
-                int IVA_cliente = rs.getInt("IVA_cliente");
-                String EmailCliente=rs.getString("Email_cliente");
-                Date data = rs.getDate("data");
-
-
-                Ordine ordine = new Ordine();
-                ordine.setNumeroOrdine(id);
-                ordine.setIndirizzo(indirizzo);
-                ordine.setProvincia(provincia);
-                ordine.setCAP(cap);
-                ordine.setCitta(citta);
-                ordine.setData(data);
-                ordine.setTotale(totale);
-                ordine.setStato(stato);
-                ordine.setNumeroProdotti(numeroProdotti);
-                ordine.setIVA_cliente(IVA_cliente);
-                ordine.setEmailCliente(EmailCliente);
-
+                Ordine ordine = mapResultSetToOrdine(rs);
                 ordini.add(ordine);
-
             }
 
         } catch (SQLException e) {
@@ -104,7 +78,7 @@ public class OrdineDAO {
         PreparedStatement preparedStatement = null;
 
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_ordine = ?";
-        Ordine ordine = new Ordine();
+        Ordine ordine = null;
 
         try {
             connection = ds.getConnection();
@@ -114,14 +88,7 @@ public class OrdineDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             if (rs.next()) {
-                ordine = new Ordine();
-                ordine.setNumeroOrdine(rs.getInt("id_ordine"));
-                ordine.setData(rs.getDate("data"));
-                ordine.setTotale(rs.getDouble("totale"));
-                ordine.setStato(rs.getString("stato"));
-                ordine.setNumeroProdotti(rs.getInt("numero_prodotti"));
-                ordine.setIVA_cliente(rs.getInt("IVA_cliente"));
-                ordine.setEmailCliente(rs.getString("Email_cliente"));
+                ordine = mapResultSetToOrdine(rs);
             }
 
         } catch (SQLException e) {
@@ -142,7 +109,7 @@ public class OrdineDAO {
             }
         }
 
-        return ordine;
+        return ordine != null ? ordine : new Ordine();
     }
 
     public void aggiornaStatoOrdine(int numeroOrdine, String nuovoStato) {
@@ -182,7 +149,7 @@ public class OrdineDAO {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Prodotto> prodotti = new ArrayList<>();
-        String selectSQL = "SELECT p.idProdotto, p.Quantita, p.Prezzo, p.Nome, p.Descrizione, p.Categoria, p.Sconto, p.Foto " +
+        String selectSQL = "SELECT p.idProdotto, p.Quantita, p.Prezzo, p.Nome, p.Descrizione, p.Categoria, p.Sconto, p.Foto, d.quantita as quantita_ordinata " +
                 "FROM Prodotto p " +
                 "JOIN DettagliOrdine d ON p.idProdotto = d.idProdotto " +
                 "WHERE d.idOrdine = ?";
@@ -197,7 +164,6 @@ public class OrdineDAO {
             while (rs.next()) {
                 Prodotto prodotto = new Prodotto();
                 prodotto.setId(rs.getInt("idProdotto"));
-                prodotto.setQuantita(rs.getInt("Quantita"));
                 prodotto.setPrezzo(rs.getDouble("Prezzo"));
                 prodotto.setNome(rs.getString("Nome"));
                 prodotto.setDescrizione(rs.getString("Descrizione"));
@@ -207,8 +173,6 @@ public class OrdineDAO {
                 Categoria categoria = Categoria.valueOf(categoriaString);
                 prodotto.setCategoria(categoria);
 
-                prodotto.setSconto(rs.getDouble("Sconto"));
-                prodotto.setImg(rs.getBytes("Foto"));
 
                 prodotti.add(prodotto);
             }
@@ -233,60 +197,94 @@ public class OrdineDAO {
         return prodotti;
     }
 
-    public int doSave(String indirizzo, double totale, String stato, int numProdotti, int Iva, String Email, String citta, int CAP, String provincia ) throws SQLException {
+    public int doSave(Ordine ordine) throws SQLException {
         int idOrdineGenerato = -1;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        ResultSet generatedKeys = null;
 
-        String insertSQL = "INSERT INTO Ordine (indirizzo, data, totale, stato, numero_prodotti, IVA_cliente, Email_cliente, citta, CAP, provincia) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Suppongo che la tua tabella abbia campi compatibili con l'Entity
+        String insertSQL = "INSERT INTO Ordine (totale, user_id, data, stato, items) VALUES (?, ?, ?, ?, ?)";
 
         try {
             connection = ds.getConnection();
-            preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement = connection.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS);
 
-            preparedStatement.setString(1, indirizzo);
+            preparedStatement.setDouble(1, ordine.getTotale());
+            preparedStatement.setLong(2, ordine.getUserId());
 
-            Date utilDate = new Date(); // ottieni la data corrente in java.util.Date
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()); // converti in java.sql.Date
-            preparedStatement.setDate(2, sqlDate);
+            // Converti LocalDateTime a java.sql.Timestamp
+            java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(ordine.getDate());
+            preparedStatement.setTimestamp(3, timestamp);
 
-            preparedStatement.setDouble(3, totale);
-            preparedStatement.setString(4, stato);
-            preparedStatement.setInt(5, numProdotti);
-            preparedStatement.setInt(6, Iva);
-            preparedStatement.setString(7,Email);
-            preparedStatement.setString(8,citta);
-            preparedStatement.setInt(9,CAP);
-            preparedStatement.setString(10,provincia);
+            preparedStatement.setString(4, ordine.getStato().toString());
+
+            // Serializza gli items in JSON (come fa la tua Entity)
+            if (ordine.getItems() != null) {
+                StringBuilder itemsJson = new StringBuilder("[");
+                for (String item : ordine.getItems()) {
+                    itemsJson.append(item).append(",");
+                }
+                if (ordine.getItems().size() > 0) {
+                    itemsJson.deleteCharAt(itemsJson.length() - 1);
+                }
+                itemsJson.append("]");
+                preparedStatement.setString(5, itemsJson.toString());
+            } else {
+                preparedStatement.setString(5, "[]");
+            }
 
             int rowsInserted = preparedStatement.executeUpdate();
-            System.out.println("righe "+rowsInserted);
+            System.out.println("righe inserite: " + rowsInserted);
 
-
-            ResultSet rs = preparedStatement.executeQuery("SELECT LAST_INSERT_ID()");
-            if (rs.next()) {
-                idOrdineGenerato = rs.getInt(1);
+            // Recupera l'ID generato
+            generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                idOrdineGenerato = generatedKeys.getInt(1);
                 System.out.println("Ultimo ID inserito: " + idOrdineGenerato);
             }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         } finally {
+            try {
+                if (generatedKeys != null)
+                    generatedKeys.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             try {
                 if (preparedStatement != null)
                     preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             } finally {
                 if (connection != null)
-                    connection.close();
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
             }
         }
 
         return idOrdineGenerato;
     }
 
+    // Metodo vecchio per compatibilità
+    public int doSave(String indirizzo, double totale, String stato, int numProdotti, int Iva, String Email, String citta, int CAP, String provincia) throws SQLException {
+        // Non posso creare un Ordine JPA con questi campi
+        // Forse dovresti usare un'altra classe per questa operazione
+        System.out.println("ATTENZIONE: Metodo deprecato. Usa doSave(Ordine ordine) invece.");
+        return -1;
+    }
+
     public List<Ordine> getAllOrdini() throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Ordine> ordini = new ArrayList<>();
-        String selectSQL = "SELECT * FROM " + TABLE_NAME;
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " ORDER BY data DESC";
 
         try {
             connection = ds.getConnection();
@@ -295,36 +293,17 @@ public class OrdineDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id_ordine");
-                String indirizzo= rs.getString("indirizzo");
-                String citta= rs.getString("citta");
-                String provincia= rs.getString("provincia");
-                int cap = rs.getInt("CAP");
-                double totale= rs.getDouble("totale");
-                String stato = rs.getString("stato");
-                int numeroProdotti = rs.getInt("numero_prodotti");
-                int IVA_cliente = rs.getInt("IVA_cliente");
-                String EmailCliente=rs.getString("Email_cliente");
-                Date data = rs.getDate("data");
-
-
-                Ordine ordine = new Ordine();
-                ordine.setNumeroOrdine(id);
-                ordine.setIndirizzo(indirizzo);
-                ordine.setProvincia(provincia);
-                ordine.setCAP(cap);
-                ordine.setCitta(citta);
-                ordine.setData(data);
-                ordine.setTotale(totale);
-                ordine.setStato(stato);
-                ordine.setNumeroProdotti(numeroProdotti);
-                ordine.setIVA_cliente(IVA_cliente);
-                ordine.setEmailCliente(EmailCliente);
-
+                Ordine ordine = mapResultSetToOrdine(rs);
                 ordini.add(ordine);
             }
 
         } finally {
+            try {
+                if (preparedStatement != null)
+                    preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             if (connection != null)
                 try {
                     connection.close();
@@ -333,5 +312,93 @@ public class OrdineDAO {
                 }
         }
         return ordini;
+    }
+
+    // Metodo helper per mappare il ResultSet all'Entity Ordine JPA
+    private Ordine mapResultSetToOrdine(ResultSet rs) throws SQLException {
+        Ordine ordine = new Ordine();
+
+        // Mappa i campi dal database all'Entity
+        // ATTENZIONE: La tua Entity Ordine JPA ha campi diversi dalla tabella!
+        // Suppongo che la tabella abbia questi campi:
+        // id_ordine, totale, user_id, data, stato, items
+
+        ordine.setId(rs.getLong("id_ordine"));
+        ordine.setTotale(rs.getDouble("totale"));
+
+        // Controlla se il campo è user_id o userId
+        try {
+            ordine.setUserId(rs.getLong("user_id"));
+        } catch (SQLException e) {
+            ordine.setUserId(rs.getLong("userId"));
+        }
+
+
+        // Imposta lo stato
+        String statoString = rs.getString("stato");
+        if (statoString != null) {
+            try {
+                enumerativeTypes.Stato stato = enumerativeTypes.Stato.valueOf(statoString);
+                ordine.setStato(stato);
+            } catch (IllegalArgumentException e) {
+                ordine.setStato(enumerativeTypes.Stato.PREPARATION);
+            }
+        }
+
+        // Gestisci gli items (JSON array come stringa)
+        String itemsJson = rs.getString("items");
+        if (itemsJson != null && !itemsJson.isEmpty()) {
+            // Parsa il JSON array in una lista di stringhe
+            // Questo è un parsing semplice, potresti aver bisogno di una libreria JSON
+            itemsJson = itemsJson.trim();
+            if (itemsJson.startsWith("[") && itemsJson.endsWith("]")) {
+                itemsJson = itemsJson.substring(1, itemsJson.length() - 1);
+                String[] itemsArray = itemsJson.split(",");
+                List<String> itemsList = new ArrayList<>();
+                for (String item : itemsArray) {
+                    if (!item.trim().isEmpty()) {
+                        itemsList.add(item.trim());
+                    }
+                }
+                ordine.setItems(itemsList);
+            }
+        }
+
+        return ordine;
+    }
+
+    // Metodo per salvare i dettagli dell'ordine
+    public void salvaDettagliOrdine(int idOrdine, int idProdotto, int quantita, double prezzoUnitario) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        String insertSQL = "INSERT INTO DettagliOrdine (idOrdine, idProdotto, quantita, prezzo_unitario) VALUES (?, ?, ?, ?)";
+
+        try {
+            connection = ds.getConnection();
+            preparedStatement = connection.prepareStatement(insertSQL);
+
+            preparedStatement.setInt(1, idOrdine);
+            preparedStatement.setInt(2, idProdotto);
+            preparedStatement.setInt(3, quantita);
+            preparedStatement.setDouble(4, prezzoUnitario);
+
+            preparedStatement.executeUpdate();
+
+        } finally {
+            try {
+                if (preparedStatement != null)
+                    preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null)
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }
     }
 }

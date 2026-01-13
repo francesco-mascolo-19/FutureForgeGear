@@ -12,6 +12,7 @@ public interface CartServiceRemote {
     void clearCart(Cart cart);
     void updateCart(Cart cart);
     Cart findCartById(int id);
-    Cart findCartByCostumer(int userId);
+    Cart findCartByCostumer(long userId);
+    void removeProductFromCart(int cartId, int productId); // Nuovo metodo
 
 }
