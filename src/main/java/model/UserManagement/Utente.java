@@ -34,7 +34,7 @@ public class Utente implements Serializable {
     private Ruolo ruolo;
 
     @Id @GeneratedValue
-    private Long id;
+    private int id;
 
     public Utente(){}
 
@@ -85,11 +85,11 @@ public class Utente implements Serializable {
                 '}';
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 }
