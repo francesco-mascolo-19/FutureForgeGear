@@ -13,6 +13,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import model.UserManagement.Cliente;
 import model.UserManagement.Fornitore;
+import model.UserManagement.Indirizzo;
 import model.UserManagement.Utente;
 
 import java.util.ArrayList;
@@ -43,30 +44,31 @@ public class DatabasePopulator {
         admin.setRuolo("ADMIN"); */
     // record
 
-    Utente utenteFornitore1=new Utente("Mario", "Rossi", "mario.rossi@example.com", "mrossi", "abc", Ruolo.FORNITORE);
-    Fornitore fornitore1 = new Fornitore(utenteFornitore1);
+    Fornitore utenteFornitore1=new Fornitore("Mario", "Rossi", "mario.rossi@example.com", "mrossi", "abc");
+    //Fornitore fornitore1 = new Fornitore(utenteFornitore1);
 
-    Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  /*null,*/ Categoria.FISSI, 3, true);
-    Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,/*null,*/Categoria.FISSI, 5, true);
-    Prodotto p3=new Prodotto("Workstation Creativa Ryzen 9", "Potente workstation progettata per editing video, rendering 3D e grafica professionale. Elevate prestazioni multi-core e memoria ad alta velocità.", 1799.9, /*null,*/Categoria.FISSI, 2, true);
-    Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, /*null,*/Categoria.FISSI, 4, true);
-    Prodotto p5=new Prodotto("Gaming Budget Intel i3 – GTX 1650", "Desktop entry-level perfetto per gaming leggero ed e-sports. Buon equilibrio tra prestazioni e prezzo, ideale per Fortnite, Valorant e simili.", 749.99, /*null,*/Categoria.FISSI, 7, true);
+    Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  /*null,*/ Categoria.FISSI, 3, true, utenteFornitore1);
+    Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,/*null,*/Categoria.FISSI, 5, true, utenteFornitore1);
+    Prodotto p3=new Prodotto("Workstation Creativa Ryzen 9", "Potente workstation progettata per editing video, rendering 3D e grafica professionale. Elevate prestazioni multi-core e memoria ad alta velocità.", 1799.9, /*null,*/Categoria.FISSI, 2, true, utenteFornitore1);
+    Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, /*null,*/Categoria.FISSI, 4, true, utenteFornitore1);
+    Prodotto p5=new Prodotto("Gaming Budget Intel i3 – GTX 1650", "Desktop entry-level perfetto per gaming leggero ed e-sports. Buon equilibrio tra prestazioni e prezzo, ideale per Fortnite, Valorant e simili.", 749.99, /*null,*/Categoria.FISSI, 7, true, utenteFornitore1);
 
     // Parametri: nome, cognome, email, username, password, ruolo
-    Utente cliente = new Utente("Francesco", "Mascolo", "f.mascolo@gmail.com", "francesco_m", "password", Ruolo.CLIENTE);
+    Indirizzo ind= new Indirizzo("Italia","Napoli","Boschetto Fangoso","Via Boschetto", 4, 80033);
+    Utente cliente = new Utente("Francesco", "Mascolo", "f.mascolo@gmail.com", "francesco_m", "password", ind);
 
     @PostConstruct
     public void populateDB(){
         System.out.println("HO INIZIATO IL POPOLAMENTOOOOOOOOO!! \n");
         System.out.println(em);
 
-       /* em.createQuery("DELETE FROM Prodotto p").executeUpdate();
+        em.createQuery("DELETE FROM Prodotto p").executeUpdate();
         em.createQuery("DELETE FROM Fornitore f").executeUpdate();
 
         // Aggiungi i prodotti alla lista del fornitore
-        fornitore1.setProdottiForniti(new ArrayList<>(Arrays.asList(p1, p2, p3, p4)));
+        utenteFornitore1.setProdottiForniti(new ArrayList<>(Arrays.asList(p1, p2, p3, p4,p5)));
 
-       // em.persist(fornitore1); */
+        em.persist(utenteFornitore1);
         em.persist(p1);
         em.persist(p2);
         em.persist(p3);
@@ -77,15 +79,12 @@ public class DatabasePopulator {
 
     @PreDestroy
     public void clearDB(){
-        System.out.println("Pulizia del database in corso...");
-
-        em.createQuery("DELETE FROM Prodotto").executeUpdate();
-        em.createQuery("DELETE FROM Utente").executeUpdate();
-        em.createQuery("DELETE FROM Cart").executeUpdate();
-
-        em.flush();
+        em.remove(p1);
+        em.remove(p2);
+        em.remove(p3);
+        em.remove(p4);
+        em.remove(cliente);
+        em.remove(utenteFornitore1);
         em.clear();
-
-        System.out.println("Database pulito con successo.");
     }
 }
