@@ -5,6 +5,13 @@ ol,ul{list-style-type: none;}
 img{height: auto;}
 
 
+
+
+
+
+
+
+
 .animate {  -webkit-transition: all 0.3s ease-in-out;
     -moz-transition: all 0.3s ease-in-out;
     -ms-transition: all 0.3s ease-in-out;
@@ -41,7 +48,7 @@ img{height: auto;}
 
 .header_logo
 {
-    background: url(/image/ffglogo.png) no-repeat center center;
+    background: url(image/logohome.png) no-repeat center center;
     background-size: cover;
 
     color:#fff;
@@ -67,6 +74,8 @@ img{height: auto;}
 {
     display: inline-block;
 
+
+
 }
 
 .header_menu_item a
@@ -85,6 +94,8 @@ img{height: auto;}
     color: black;
 }
 
+
+
 .header_icon-bar
 {
     display: block;
@@ -102,11 +113,47 @@ img{height: auto;}
     margin-bottom: 5px;
 }
 
+.user-info {
+    display: flex; /* Utilizzo di Flexbox */
+    align-items: center; /* Allinea verticalmente gli elementi */
+    justify-content: center; /* Centra gli elementi orizzontalmente */
+    gap: 20px; /* Spaziatura tra gli elementi */
+    margin-bottom: 50px; /* Aumenta la distanza dal fondo */
+}
 
+.user-name {
+    font-size: 16px;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+    background-image: url(image/profilo-icon.png); /* Cambia con il path corretto */
+    background-size: cover;
+    background-position: center;
+}
+
+.logout-button {
+    text-decoration: none;
+    color: white;
+    background-color: #FF4136;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease-in-out; /* Aggiunge un effetto hover */
+}
+
+.logout-button:hover {
+    background-color: #FF6347;
+}
 
 /*_____________________
 Cover
 _____________________*/
+
+
 
 .cover
 {
@@ -126,19 +173,19 @@ _____________________*/
 
 @keyframes slideshow {
     0% {
-        background-image: url(/image/carosello1.jpg);
+        background-image: url(image/bagno.jpeg);
     }
     25% {
-        background-image: url(/image/carosello2.jpg);
+        background-image: url(image/0fd3416c.jpeg);
     }
     50% {
-        background-image: url(/image/carosello3.jpg);
+        background-image: url(image/8ad73f3c.jpeg);
     }
     75% {
-        background-image: url(/image/carosello4.jpg);
+        background-image: url(image/68f64b9d.jpeg);
     }
     100% {
-        background-image: url(/image/carosello5.jpg);
+        background-image: url(image/casa.jpg);
     }
 }
 
@@ -150,6 +197,12 @@ _____________________*/
     animation-timing-function:5s; /* imposta la funzione di temporizzazione dell'animazione */
     animation-iteration-count: infinite; /* imposta il numero di volte che l'animazione deve ripetersi */
 }
+
+
+
+
+
+
 
 .cover_filter
 {
@@ -245,7 +298,7 @@ _____________________________*/
     width: 30%;
     float: left;
     height: 100%;
-    background-image: url(/image/pcfisso2.jpg);
+    background-image: url(image/soggiorno.jpg);
     /*ora l immagine la impostiamo su cover cosi da essere responsive*/
     background-size: cover;/*impostazione cover*/
     -o-background-size: cover;/*impostazione cover per opera*/
@@ -256,12 +309,12 @@ _____________________________*/
 
 .banner_image2
 {
-    background-image: url(/image/pcportatile2.jpg);
+    background-image: url(image/bagno.jpg);
 }
 
 .banner_image3
 {
-    background-image: url(/image/periferiche2.jpg);
+    background-image: url(image/casa.jpg);
 }
 .float{
     float:right;
@@ -308,6 +361,14 @@ _____________________________*/
 
 
 
+
+
+
+
+
+
+
+
 .clearfix:after {
     visibility: hidden;
     display: block;
@@ -318,6 +379,17 @@ _____________________________*/
 }
 * html .clearfix             { zoom: 1; } /* IE6 */
 *:first-child+html .clearfix { zoom: 1; }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -336,6 +408,7 @@ _____________________________*/
         text-align: left;
     }
 }
+
 
 /*smatphone*/
 @media (max-width : 767px)
@@ -362,7 +435,7 @@ _____________________________*/
 
     .header_menu_item
     {
-        display:block;
+        display:block; /*gli li non saranno piu sulla stessa linea ma uno sotto l altro*/
 
     }
 
@@ -415,6 +488,10 @@ _____________________________*/
 
 }
 
+
+
+
+
 /*___________________________
   Article
    _____________________________*/
@@ -433,9 +510,21 @@ _____________________________*/
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 .insta{
 
-    background-image: url(/image/insta.png);
+    background-image: url(img/insta.png);
     /*ora l immagine la impostiamo su cover cosi da essere responsive*/
     background-size: cover;/*impostazione cover*/
     -o-background-size: cover;/*impostazione cover per opera*/
@@ -455,7 +544,7 @@ _____________________________*/
 
 .face{
 
-    background-image: url(/image/face.png);
+    background-image: url(img/face.png);
     /*ora l immagine la impostiamo su cover cosi da essere responsive*/
     background-size: cover;/*impostazione cover*/
     -o-background-size: cover;/*impostazione cover per opera*/
@@ -472,6 +561,9 @@ _____________________________*/
     z-index: 2000;
 
 }
+
+
+
 
 footer {
 
@@ -538,10 +630,83 @@ footer a:hover {
 Menu media queri
 ----------------------------------------*/
 
+
+
 *,
 *:before,
 *:after {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-group button:hover {
+    background-color: #45a049;
+}
+
+.message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.link_register
+{
+    font-size: small;
+    color: #ff1d00;
+    text-decoration:none;
+}
+
+.link_register:hover
+{
+    color: #2c1402;
+    text-decoration:none;
 }
