@@ -14,8 +14,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import enumerativeTypes.Categoria;
 import model.OrderManagement.Prodotto;
 

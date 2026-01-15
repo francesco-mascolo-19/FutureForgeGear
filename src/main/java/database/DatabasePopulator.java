@@ -60,13 +60,13 @@ public class DatabasePopulator {
         System.out.println("HO INIZIATO IL POPOLAMENTOOOOOOOOO!! \n");
         System.out.println(em);
 
-        em.createQuery("DELETE FROM Prodotto p").executeUpdate();
+       /* em.createQuery("DELETE FROM Prodotto p").executeUpdate();
         em.createQuery("DELETE FROM Fornitore f").executeUpdate();
 
         // Aggiungi i prodotti alla lista del fornitore
         fornitore1.setProdottiForniti(new ArrayList<>(Arrays.asList(p1, p2, p3, p4)));
 
-        em.persist(fornitore1);
+       // em.persist(fornitore1); */
         em.persist(p1);
         em.persist(p2);
         em.persist(p3);
@@ -77,13 +77,15 @@ public class DatabasePopulator {
 
     @PreDestroy
     public void clearDB(){
-        em.remove(p1);
-        em.remove(p2);
-        em.remove(p3);
-        em.remove(p4);
-        em.remove(p5);
-        em.remove(fornitore1);
-        em.remove(cliente);
+        System.out.println("Pulizia del database in corso...");
+
+        em.createQuery("DELETE FROM Prodotto").executeUpdate();
+        em.createQuery("DELETE FROM Utente").executeUpdate();
+        em.createQuery("DELETE FROM Cart").executeUpdate();
+
+        em.flush();
         em.clear();
+
+        System.out.println("Database pulito con successo.");
     }
 }

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/log.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="log.css">
     <title>Registration</title>
 
 </head>
@@ -16,8 +16,7 @@
     <h1>Registrazione</h1>
 
     <!-- Login Form -->
-    <!--<form action="/FutureForgeGear/register" method="post">-->
-    <form action="${pageContext.request.contextPath}/register" method="post">
+    <form action="/FutureForgeGear/login" method="POST">
         <div class="form-group">
             <label for="name">Nome*</label>
             <input type="text" id="name" name="name" placeholder="Es. Mario Rossi" required>
@@ -26,45 +25,28 @@
             <label for="surname">Cognome*</label>
             <input type="text" id="surname" name="surname" placeholder="Es. Rossi" required>
         </div>
-
+        <div class="form-group">
+            <label for="birthdate">Data di nascita*</label>
+            <input type="date" id="birthdate" name="birthdate" required>
+        </div>
         <div class="form-group">
             <label for="email">Email*</label>
-            <input type="email" id="email" name="email" required
-                   pattern="^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)+$"
-                   minlength="7" maxlength="50"
-                   title="Inserisci un'email valida tra 4 e 50 caratteri (es: nome.cognome@email.com), con almeno un punto dopo la chiocciola.">
+            <input type="email" id="email" name="email" required>
         </div>
-
-
-
         <div class="form-group">
             <label for="password">Password*</label>
-            <input type="password" id="password" name="password" required
-                   pattern="^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,20}$"
-                   title="La password deve contenere almeno una maiuscola, un numero e avere tra 4 e 20 caratteri.">
-        </div>
-
-        <div class="form-group">
-            <label for="provincia">Provincia*</label>
-            <input type="text" id="provincia" name="provincia" placeholder="Es. Milano" required>
+            <input type="password" id="password" name="password" required>
         </div>
         <div class="form-group">
-            <label for="citta">Città*</label>
-            <input type="text" id="citta" name="citta" placeholder="Es. Milano" required>
+            <label for="vat">p.IVA*</label>
+            <input type="text" id="vat" name="vat" pattern="^[0-9]{11}$" placeholder="Es. 12345678901" required>
+            <small>Inserisci un numero di 11 cifre</small>
         </div>
         <div class="form-group">
-            <label for="via">Via*</label>
-            <input type="text" id="via" name="via" placeholder="Es. Via Roma" required>
+            <label for="iban">IBAN*</label>
+            <input type="text" id="iban" name="iban" pattern="^[A-Za-z0-9]{27}$" placeholder="Es. IT60X0542811101000000123456" required>
+            <small>Inserisci un IBAN di 27 caratteri</small>
         </div>
-        <div class="form-group">
-            <label for="numCivico">Numero Civico*</label>
-            <input type="number" id="numCivico" name="numCivico" placeholder="Es. 12" required>
-        </div>
-        <div class="form-group">
-            <label for="cap">CAP*</label>
-            <input type="number" id="cap" name="cap" placeholder="Es. 20100" required>
-        </div>
-
         <div class="form-group">
             <button type="submit">Registrati</button>
         </div>

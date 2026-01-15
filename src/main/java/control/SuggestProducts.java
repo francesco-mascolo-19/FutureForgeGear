@@ -15,10 +15,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-
-import com.google.gson.Gson;
-
 @WebServlet("/suggestProducts")
 public class SuggestProducts extends HttpServlet {
     private static final long serialVersionUID = 1L;
