@@ -18,8 +18,6 @@ public class Fornitore extends Utente implements Serializable {
 
     private List<Integer> prodottiForniti;
 
-
-
     public Fornitore(){}
 
     // Constructor with basic fields
