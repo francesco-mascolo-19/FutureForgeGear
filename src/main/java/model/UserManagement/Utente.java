@@ -158,6 +158,7 @@ public class Utente implements Serializable {
     @Override
     public String toString() {
         return "Utente{" +
+                "Id=" + id +
                 "nome='" + nome + '\'' +
                 ", cognome='" + cognome + '\'' +
                 ", email='" + email + '\'' +

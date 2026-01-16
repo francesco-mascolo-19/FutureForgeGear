@@ -3,6 +3,7 @@ package model.OrderManagement;
 import enumerativeTypes.Categoria;
 import jakarta.persistence.*;
 import model.UserManagement.Fornitore;
+import model.UserManagement.FornitoreDTO;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -49,12 +50,14 @@ public class Prodotto implements Serializable {
 
     private boolean inCatalogo;
 
+    private FornitoreDTO fornitore;
+    /*
     @ManyToOne
     @JoinColumn(name = "fornitore_id", referencedColumnName = "id")
-    private Fornitore fornitore;
+    private Fornitore fornitore;*/
 
     public Prodotto() {}
-    public Prodotto(String nome, String descrizione, Double prezzo, /*ImageIcon image,*/ Categoria categoria,int disponibilita,boolean inCatalogo) {
+    public Prodotto(String nome, String descrizione, Double prezzo, /*ImageIcon image,*/ Categoria categoria,int disponibilita,boolean inCatalogo, FornitoreDTO fornitore) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
@@ -62,6 +65,7 @@ public class Prodotto implements Serializable {
         this.categoria = categoria;
         this.disponibilita = disponibilita;
         this.inCatalogo = inCatalogo;
+        this.fornitore = fornitore;
     }
 
     public String getNome() {
@@ -107,7 +111,13 @@ public class Prodotto implements Serializable {
         this.categoria = categoria;
     }
 
+    public FornitoreDTO getFornitore(){
+        return fornitore;
+    }
 
+    public void setFornitore(FornitoreDTO fornitore){
+        this.fornitore = fornitore;
+    }
 
     @Override
     public String toString() {

@@ -31,8 +31,12 @@ public class CheckoutServlet extends HttpServlet {
         Utente utente = (Utente) session.getAttribute("loggedUser");
         Cart cart = (Cart) session.getAttribute("cart");
 
-        if (utente == null || cart == null || cart.getItems().isEmpty()) {
-            response.sendRedirect("cart.jsp?error=empty");
+        if (utente == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        if (cart == null || cart.getItems().isEmpty()) {
+            response.sendRedirect("card.jsp?error=empty");
             return;
         }
 
@@ -40,13 +44,17 @@ public class CheckoutServlet extends HttpServlet {
                 .map(item -> new ItemCartDTO(item.getProdotto().getId(), item.getQuantity()))
                 .collect(Collectors.toList());
 
-        Ordine ordine = new Ordine(utente.getId(), cart.calculateTotal(), itemsDTO);
-        orderService.addOrder(ordine);
+        Ordine order = orderService.addOrder(new Ordine(utente.getId(), cart.calculateTotal(),itemsDTO));
+        System.out.println("Ordine creato con ID: " + order.getId());
+        session.setAttribute("order", order);
 
-        session.setAttribute("order", ordine);
-        List<ItemCart> items= cart.getItems();
+        List<Ordine> orders = (List<Ordine>) session.getAttribute("orders");
+        orders.add(order);
+        session.setAttribute("orders", orders);
 
+        List<ItemCart> items = cart.getItems();
         request.setAttribute("itemsCart", items);
+
         session.removeAttribute("cart");
 
         response.sendRedirect("confirmOrder.jsp");
