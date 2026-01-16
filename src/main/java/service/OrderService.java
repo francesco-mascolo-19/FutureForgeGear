@@ -21,8 +21,11 @@ public class OrderService implements OrderServiceRemote {
     private EntityManager em;
 
     @Override
-    public void addOrder(Ordine order) {
+    public Ordine addOrder(Ordine order) {
         em.persist(order);
+        em.flush();
+        System.out.println("Ordine salvato con ID: " + order.getId());
+        return order;
     }
 
     @Override
@@ -47,10 +50,12 @@ public class OrderService implements OrderServiceRemote {
     }
 
     @Override
-    public List<Ordine> findOrdersByCostumer(int userId) {
+    public List<Ordine> findOrdersByCostumer(long userId) {
         TypedQuery<Ordine> query=em.createNamedQuery("Ordine.TROVA_PER_UTENTE", Ordine.class);
         query.setParameter("userId", userId);
-        return query.getResultList();
+        List<Ordine> orders = query.getResultList();
+        System.out.println("Ordini trovati per l'utente " + userId +": " + order.size());
+        return orders;
     }
 
     @Override
