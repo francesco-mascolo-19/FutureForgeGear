@@ -11,9 +11,7 @@ import model.OrderManagement.*;
 import model.UserManagement.Utente;
 import remoteInterfaces.CatalogoRemote;
 import remoteInterfaces.OrderServiceRemote;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
