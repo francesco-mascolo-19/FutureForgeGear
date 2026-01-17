@@ -76,7 +76,7 @@ public class DatabasePopulator {
     ItemCartDTO item2= new ItemCartDTO(p2.getId(),3);
     List<ItemCartDTO> listItem = Arrays.asList(item1, item2);
 
-    GestoreOrdini gestore1= new GestoreOrdini("Francesco","Mascolo","f.mascolo@gmail.com","password");
+    GestoreOrdini gestore1= new GestoreOrdini("Luca","Bianchi","l.bianchi@gmail.com","bianco","password");
     Ordine ordine = new Ordine(cliente.getId(),10.3,listItem);
 
     @PostConstruct
