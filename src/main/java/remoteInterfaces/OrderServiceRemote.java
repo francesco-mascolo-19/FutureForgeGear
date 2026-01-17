@@ -3,6 +3,7 @@ package remoteInterfaces;
 import model.OrderManagement.ItemCartDTO;
 import model.OrderManagement.Ordine;
 import enumerativeTypes.Stato;
+import model.UserManagement.GestoreOrdini;
 
 
 import java.sql.Date;
@@ -14,6 +15,8 @@ public interface OrderServiceRemote {
     Ordine addOrder(Ordine order);
     Ordine findOrderById(int id);
     List<Ordine> findAllOrders();
+    List<Ordine> findOrdersByGestore(long userId);
+    List<GestoreOrdini> findAllGestoreOrdini();
     void updateOrder(Ordine order);
     void removeOrder(int id);
     List<Ordine> findOrdersByCostumer(long userId);

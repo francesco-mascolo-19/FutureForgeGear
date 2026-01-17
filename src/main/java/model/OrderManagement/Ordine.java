@@ -10,10 +10,11 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import model.UserManagement.GestoreOrdini;
 
 @NamedQueries({
         @NamedQuery(name="Ordine.TROVA_TUTTI", query="SELECT o FROM Ordine o"),
+        @NamedQuery(name="Ordine.TROVA_PER_ID_GESTORE", query="SELECT o FROM Ordine o WHERE o.idGestore = :idGestore "),
         @NamedQuery(name="Ordine.TROVA_PER_ID", query="SELECT o FROM Ordine o WHERE o.id = :id "),
         @NamedQuery(name="Ordine.TROVA_PER_UTENTE", query="SELECT o FROM Ordine o WHERE o.userId = :userId"),
         @NamedQuery(name="Ordine.TROVA_PER_DATA", query="SELECT o FROM Ordine o WHERE o.date =:date "),
@@ -33,6 +34,7 @@ public class Ordine implements Serializable {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> items;
+    private Long idGestore;
 
     public Ordine() {}
     public Ordine(Long userId, Double totale, List<ItemCartDTO> items) {
@@ -41,6 +43,7 @@ public class Ordine implements Serializable {
         this.date = LocalDateTime.now();
         this.stato = Stato.PREPARATION;
         this.items = serializeItems(items);
+        this.idGestore = null;
     }
 
     // Metodo per serializzare i DTO in JSON
@@ -91,5 +94,8 @@ public class Ordine implements Serializable {
     public void setStato(Stato stato) {
         this.stato = stato;
     }
+    public Long getIdGestore() { return idGestore; }
+    public void setIdGestore(Long idGestore) { this.idGestore = idGestore; }
+    public void setIdGestore(GestoreOrdini gestore) { this.idGestore = gestore.getId(); }
 
 }

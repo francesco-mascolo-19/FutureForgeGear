@@ -15,6 +15,8 @@ import model.UserManagement.Cliente;
 import model.UserManagement.Fornitore;
 import model.UserManagement.Indirizzo;
 import model.UserManagement.Utente;
+import model.OrderManagement.ItemCartDTO;
+import model.OrderManagement.Ordine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,13 @@ public class DatabasePopulator {
         em.merge(fornitore);
     }
 
+    public void giveOrdine(Ordine ordine, GestoreOrdini gestoreOrdini) {
+        gestoreOrdini.aggiungiOrdine(ordine);
+        ordine.setIdGestore(gestoreOrdini);
+        em.merge(ordine);
+        em.merge(gestoreOrdini);
+    }
+
     // Creazione di un admin
     /*Admin admin = new Admin();
         admin.setNome("Admin User");
@@ -51,7 +60,7 @@ public class DatabasePopulator {
     // record
 
     Fornitore utenteFornitore1=new Fornitore("Mario", "Rossi", "mario.rossi@example.com", "mrossi", "abc");
-    //Fornitore fornitore1 = new Fornitore(utenteFornitore1);
+
 
     Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  /*null,*/ Categoria.FISSI, 3, true);
     Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,/*null,*/Categoria.FISSI, 5, true);
@@ -62,6 +71,13 @@ public class DatabasePopulator {
     // Parametri: nome, cognome, email, username, password, ruolo
     Indirizzo ind= new Indirizzo("Italia","Napoli","Boschetto Fangoso","Via Boschetto", 4, 80033);
     Utente cliente = new Utente("Francesco", "Mascolo", "f.mascolo@gmail.com", "francesco_m", "password");
+
+    ItemCartDTO item1= new ItemCartDTO(p1.getId(),2);
+    ItemCartDTO item2= new ItemCartDTO(p2.getId(),3);
+    List<ItemCartDTO> listItem = Arrays.asList(item1, item2);
+
+    GestoreOrdini gestore1= new GestoreOrdini("Francesco","Mascolo","f.mascolo@gmail.com","password");
+    Ordine ordine = new Ordine(cliente.getId(),10.3,listItem);
 
     @PostConstruct
     public void populateDB(){
@@ -81,6 +97,12 @@ public class DatabasePopulator {
         em.persist(p4);
         em.persist(p5);
         em.persist(cliente);
+
+        em.persist(ordine);
+        em.persist(gestore1);
+        giveOrdine(ordine, gestore1);
+
+        em.flush();
     }
 
     @PreDestroy

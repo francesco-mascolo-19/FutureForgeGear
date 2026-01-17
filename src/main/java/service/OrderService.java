@@ -10,6 +10,7 @@ import model.OrderManagement.ItemCartDTO;
 import model.OrderManagement.Ordine;
 import enumerativeTypes.Stato;
 import remoteInterfaces.OrderServiceRemote;
+import model.UserManagement.GestoreOrdini;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -56,6 +57,19 @@ public class OrderService implements OrderServiceRemote {
         List<Ordine> orders = query.getResultList();
         System.out.println("Ordini trovati per l'utente " + userId +": " + order.size());
         return orders;
+    }
+
+    @Override
+    public List<Ordine> findOrdersByGestore(long userId) {
+        TypedQuery<Ordine> query=em.createNamedQuery("Ordine.TROVA_PER_ID_GESTORE", Ordine.class);
+        query.setParameter("idGestore", userId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<GestoreOrdini> findAllGestoreOrdini() {
+        TypedQuery<GestoreOrdini> query=em.createNamedQuery("GestoreOrdini.TROVA_TUTTI", GestoreOrdini.class);
+        return query.getResultList();
     }
 
     @Override
