@@ -6,6 +6,7 @@ import model.UserManagement.Magazziniere;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import model.UserManagement.Utente;
+import enumerativeTypes.StatoRichiesta;
 
 @Entity
 @NamedQueries({
@@ -16,39 +17,49 @@ import model.UserManagement.Utente;
         @NamedQuery(name = "Request.TROVA_PER_DATA", query = "SELECT r FROM Request r WHERE r.dataOra >= :dataStart AND r.dataOra < :dataEnd"),
         @NamedQuery(name = "Request.TROVA_PRIMA_DI_DATA", query = "SELECT r FROM Request r WHERE r.dataOra < :data"),
         @NamedQuery(name = "Request.TROVA_DOPO_DI_DATA", query = "SELECT r FROM Request r WHERE r.dataOra > :data")
+        @NamedQuery(name=  "Request.TROVA_PER_DESTINATARIO", query = "SELECT r FROM Request r WHERE r.destinatarioID= :destinatarioID"),
 })
 public class Request implements Serializable {
 
     @Id @GeneratedValue private int id;
 
-    private int magazziniereID; // Chi effettua la richiesta
-    private int destinatarioID;      // Destinatario della richiesta
+    private Long magazziniereID;      // Chi effettua la richiesta
+    private Long destinatarioID;      // Destinatario della richiesta
 
     private LocalDateTime dataOra;    // Data e ora della richiesta
+    private StatoRichiesta stato;
 
     public Request() {}
 
-    public Request(int magazziniereID, int destinatarioID, LocalDateTime dataOra) {
+    public Request(Long magazziniereID, Long destinatarioID, LocalDateTime dataOra) {
         this.magazziniereID = magazziniereID;
         this.destinatarioID = destinatarioID;
         this.dataOra = dataOra;
+        this.stato = StatoRichiesta.NON_ACCETTATO;
     }
 
     public int getId() { return id;}
     public void setId(int id) { this.id = id;}
 
-    public int getMagazziniereID() { return magazziniereID; }
-    public void setMagazziniereID(int magazziniereID) { this.magazziniereID = magazziniereID; }
+    public Long getMagazziniereID() { return magazziniereID; }
+    public void setMagazziniereID(Long magazziniereID) { this.magazziniereID = magazziniereID; }
+
+    public Long getDestinatarioID() { return destinatarioID; }
+    public void setDestinatarioID(Long destinatarioID) { this.destinatarioID = destinatarioID; }
 
     public LocalDateTime getDataOra() { return dataOra; }
     public void setDataOra(LocalDateTime dataOra) { this.dataOra = dataOra;}
 
+    public StatoRichiesta getStato() { return stato; }
+    public void accettaRichiesta() { this.stato = StatoRichiesta.ACCETTATO; }
+
     @Override
     public String toString() {
         return "Request{" +
-                "magazziniere=" + magazziniereID +
+                " magazziniere=" + magazziniereID +
                 ", destinatario=" + destinatarioID +
                 ", dataOra=" + dataOra +
+                ", stato=" + stato +
                 '}';
     }
 
