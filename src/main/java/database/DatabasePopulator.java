@@ -17,6 +17,9 @@ import model.UserManagement.Indirizzo;
 import model.UserManagement.Utente;
 import model.OrderManagement.ItemCartDTO;
 import model.OrderManagement.Ordine;
+import model.RequestManagement.OrderRequest;
+import model.RequestManagement.Request;
+import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,6 +75,10 @@ public class DatabasePopulator {
     Indirizzo ind= new Indirizzo("Italia","Napoli","Boschetto Fangoso","Via Boschetto", 4, 80033);
     Utente cliente = new Utente("Francesco", "Mascolo", "f.mascolo@gmail.com", "francesco_m", "password");
 
+    List<Prodotto> prodotti = Arrays.asList(p1,p2, p3, p4);
+    Magazzino magazzino= new Magazzino(ind, prodotti);
+    Magazziniere magazziniere = new Magazziniere("Antonio","Rossi","Arossi@gmail.com","rosso","password", magazzino);
+
     ItemCartDTO item1= new ItemCartDTO(p1.getId(),2);
     ItemCartDTO item2= new ItemCartDTO(p2.getId(),3);
     List<ItemCartDTO> listItem = Arrays.asList(item1, item2);
@@ -101,6 +108,16 @@ public class DatabasePopulator {
         em.persist(ordine);
         em.persist(gestore1);
         giveOrdine(ordine, gestore1);
+
+        em.flush();
+        em.persist(magazziniere);
+        OrderRequest orderRequest= new OrderRequest(magazziniere.getId(), gestore1.getId(), LocalDateTime.now(), ordine.getId());
+        em.persist(orderRequest);
+
+        System.out.println("MagID: "+magazziniere.getId());
+        System.out.println("GestOrdID: "+gestore1.getId());
+        System.out.println("Ordine: "+ordine.getId());
+        System.out.println(orderRequest);
 
         em.flush();
     }
