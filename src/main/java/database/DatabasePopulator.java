@@ -11,10 +11,7 @@ import jakarta.persistence.EntityManager;
 import model.OrderManagement.Prodotto;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import model.UserManagement.Cliente;
-import model.UserManagement.Fornitore;
-import model.UserManagement.Indirizzo;
-import model.UserManagement.Utente;
+import model.UserManagement.*;
 import model.OrderManagement.ItemCartDTO;
 import model.OrderManagement.Ordine;
 import model.RequestManagement.OrderRequest;
@@ -23,6 +20,7 @@ import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Singleton
 @Startup
@@ -40,8 +38,9 @@ public class DatabasePopulator {
     @PersistenceContext(unitName = "FutureForgeGearPU")
     private EntityManager em;
 
-    public void createProdotto(Prodotto prodotto, Fornitore fornitore){
-        fornitore.addProdotto((prodotto.getId()));
+    public void createProdotto(Prodotto prodotto, Fornitore fornitore) {
+        fornitore.addProdotto(prodotto.getId()); // Aggiungi i prodotti alla lista del fornitore
+        prodotto.setFornitore(fornitore.toDTO().getFornitoreID());
         em.merge(prodotto);
         em.merge(fornitore);
     }
@@ -84,7 +83,6 @@ public class DatabasePopulator {
     List<ItemCartDTO> listItem = Arrays.asList(item1, item2);
 
     GestoreOrdini gestore1= new GestoreOrdini("Luca","Bianchi","l.bianchi@gmail.com","bianco","password");
-    Ordine ordine = new Ordine(cliente.getId(),10.3,listItem);
 
     @PostConstruct
     public void populateDB(){
@@ -93,9 +91,10 @@ public class DatabasePopulator {
 
         em.createQuery("DELETE FROM Prodotto p").executeUpdate();
         em.createQuery("DELETE FROM Fornitore f").executeUpdate();
+        em.createQuery("DELETE FROM Cliente c").executeUpdate();
+        em.createQuery("DELETE FROM Utente").executeUpdate();
 
-        // Aggiungi i prodotti alla lista del fornitore
-        utenteFornitore1.setProdottiForniti(new ArrayList<>(Arrays.asList(p1, p2, p3, p4,p5)));
+        em.flush();
 
         em.persist(utenteFornitore1);
         em.persist(p1);
@@ -120,6 +119,8 @@ public class DatabasePopulator {
         System.out.println(orderRequest);
 
         em.flush();
+
+        System.out.println("Popolamento completato");
     }
 
     @PreDestroy
