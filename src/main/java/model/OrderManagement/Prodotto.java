@@ -2,18 +2,15 @@ package model.OrderManagement;
 
 import enumerativeTypes.Categoria;
 import jakarta.persistence.*;
-import model.UserManagement.Fornitore;
 import model.UserManagement.FornitoreDTO;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
+
 
 @NamedQueries({
         @NamedQuery(name="TROVA_TUTTI", query="SELECT p FROM Prodotto p"),
+        @NamedQuery(name="TROVA_IN_CATALOGO", query="SELECT p FROM Prodotto p WHERE p.inCatalogo=true"),
+        @NamedQuery(name="TROVA_IN_MAGAZZINO", query="SELECT p FROM Prodotto p WHERE p.inMagazzino=true"),
         @NamedQuery(name="TROVA_PER_IDENT", query="SELECT p FROM Prodotto p WHERE p.id = :ID "),
         @NamedQuery(name="TROVA_PER_PREZZO_MINORE", query="SELECT p FROM Prodotto p WHERE p.prezzo <= :prezzo"),
         @NamedQuery(name="TROVA_PER_PREZZO_MAGGIORE", query="SELECT p FROM Prodotto p WHERE p.prezzo >= :prezzo"),
@@ -21,13 +18,9 @@ import java.io.Serializable;
         @NamedQuery(name="TROVA_PER_NOME", query="SELECT p FROM Prodotto p WHERE p.nome= :nome"),
 
         @NamedQuery(name = "TROVA_PER_FORNITORE", query = "SELECT p FROM Prodotto p WHERE p.fornitore = :fornitore")
-
 })
-
-
 @Entity
 public class Prodotto implements Serializable {
-
 
     public static final String TROVA_PER_IDENT= "TROVA_PER_IDENT";
     public static final String TROVA_PER_PREZZO_MINORE= "TROVA_PER_PREZZO_MINORE";
@@ -35,6 +28,7 @@ public class Prodotto implements Serializable {
     public static final String TROVA_PER_NOME= "TROVA_PER_NOME";
     public static final String TROVA_PER_PREZZO_MAGGIORE= "TROVA_PER_PREZZO_MAGGIORE";
     public static final String TROVA_TUTTI= "TROVA_TUTTI";
+
     public static final String TROVA_PER_FORNITORE= "Product.findFornitore";
 
     @Id @GeneratedValue
@@ -46,18 +40,23 @@ public class Prodotto implements Serializable {
     private Categoria categoria;
 
     private int disponibilita;
-
-
     private boolean inCatalogo;
+    private boolean inMagazzino;
 
-    private FornitoreDTO fornitore;
+
+    //@Column(name="fornitore_id")
+    //private FornitoreDTO fornitore;
+    private Long fornitore;
     /*
     @ManyToOne
     @JoinColumn(name = "fornitore_id", referencedColumnName = "id")
-    private Fornitore fornitore;*/
+    private Fornitore fornitore; */
+
 
     public Prodotto() {}
-    public Prodotto(String nome, String descrizione, Double prezzo, /*ImageIcon image,*/ Categoria categoria,int disponibilita,boolean inCatalogo, FornitoreDTO fornitore) {
+
+    public Prodotto(String nome, String descrizione, Double prezzo, /*ImageIcon image,*/
+                    Categoria categoria,int disponibilita,boolean inCatalogo, boolean inMagazzino) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
@@ -65,7 +64,21 @@ public class Prodotto implements Serializable {
         this.categoria = categoria;
         this.disponibilita = disponibilita;
         this.inCatalogo = inCatalogo;
-        this.fornitore = fornitore;
+        this.inMagazzino = inMagazzino;
+    }
+
+
+    public Prodotto(String nome, String descrizione, Double prezzo, //ImageIcon image,
+                    Categoria categoria,int disponibilita,boolean inCatalogo, boolean inMagazzino ,Long fornitore) {
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.prezzo = prezzo;
+        //this.image = image;
+        this.categoria = categoria;
+        this.disponibilita = disponibilita;
+        this.inCatalogo = inCatalogo;
+        this.inMagazzino = inMagazzino;
+        this.fornitore=fornitore;
     }
 
     public String getNome() {
@@ -111,16 +124,30 @@ public class Prodotto implements Serializable {
         this.categoria = categoria;
     }
 
-    public FornitoreDTO getFornitore(){
+    public boolean isInMagazzino() {return inMagazzino;}
+    public void setInMagazzino(boolean inMagazzino) {this.inMagazzino = inMagazzino;}
+
+    /*
+    public Fornitore getFornitore() {return fornitore;}
+    public void setFornitore(Fornitore fornitore) {
+        //System.out.println("Siamo qui!");
+        //System.out.println(fornitore.toString());
+        this.fornitore = fornitore;
+        //System.out.println(this.fornitore);
+    }*/
+
+    public Long getFornitore() {
         return fornitore;
     }
-
-    public void setFornitore(FornitoreDTO fornitore){
+    public void setFornitore(Long fornitore) {
         this.fornitore = fornitore;
     }
 
+
+
     @Override
     public String toString() {
+        //System.out.println(this.fornitore);
         return "Prodotto{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
@@ -129,10 +156,9 @@ public class Prodotto implements Serializable {
                 ", categoria=" + categoria +
                 ", disponibilita=" + disponibilita +
                 ", inCatalogo=" + inCatalogo +
-                ", fornitore =" + (fornitore != null ?
-                fornitore.toString() : "Nessun fornitore") +
+                ", inMagazzino=" + inMagazzino +
+                ", fornitore=" + (fornitore != null ? fornitore.toString() : "Nessun fornitore") +
                 '}';
     }
 
 }
-

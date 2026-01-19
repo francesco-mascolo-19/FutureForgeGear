@@ -64,11 +64,11 @@ public class DatabasePopulator {
     Fornitore utenteFornitore1=new Fornitore("Mario", "Rossi", "mario.rossi@example.com", "mrossi", "abc");
 
 
-    Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  /*null,*/ Categoria.FISSI, 3, true);
-    Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,/*null,*/Categoria.FISSI, 5, true);
-    Prodotto p3=new Prodotto("Workstation Creativa Ryzen 9", "Potente workstation progettata per editing video, rendering 3D e grafica professionale. Elevate prestazioni multi-core e memoria ad alta velocità.", 1799.9, /*null,*/Categoria.FISSI, 2, true);
-    Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, /*null,*/Categoria.FISSI, 4, true);
-    Prodotto p5=new Prodotto("Gaming Budget Intel i3 – GTX 1650", "Desktop entry-level perfetto per gaming leggero ed e-sports. Buon equilibrio tra prestazioni e prezzo, ideale per Fortnite, Valorant e simili.", 749.99, /*null,*/Categoria.FISSI, 7, true);
+    Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  /*null,*/ Categoria.FISSI, 3, true, true);
+    Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,/*null,*/Categoria.FISSI, 5, true, true);
+    Prodotto p3=new Prodotto("Workstation Creativa Ryzen 9", "Potente workstation progettata per editing video, rendering 3D e grafica professionale. Elevate prestazioni multi-core e memoria ad alta velocità.", 1799.9, /*null,*/Categoria.FISSI, 2, true, true);
+    Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, /*null,*/Categoria.FISSI, 4, true, true);
+    Prodotto p5=new Prodotto("Gaming Budget Intel i3 – GTX 1650", "Desktop entry-level perfetto per gaming leggero ed e-sports. Buon equilibrio tra prestazioni e prezzo, ideale per Fortnite, Valorant e simili.", 749.99, /*null,*/Categoria.FISSI, 7, true, true);
 
     // Parametri: nome, cognome, email, username, password, ruolo
     Indirizzo ind= new Indirizzo("Italia","Napoli","Boschetto Fangoso","Via Boschetto", 4, 80033);
@@ -109,14 +109,11 @@ public class DatabasePopulator {
         giveOrdine(ordine, gestore1);
 
         em.flush();
-        em.persist(magazziniere);
-        OrderRequest orderRequest= new OrderRequest(magazziniere.getId(), gestore1.getId(), LocalDateTime.now(), ordine.getId());
-        em.persist(orderRequest);
 
-        System.out.println("MagID: "+magazziniere.getId());
-        System.out.println("GestOrdID: "+gestore1.getId());
-        System.out.println("Ordine: "+ordine.getId());
-        System.out.println(orderRequest);
+
+        em.persist(magazziniere);
+        OrderRequest orderRequest= new OrderRequest(magazziniere.getId(), gestore1.getId(), LocalDateTime.now(), ordine.getId(), "Ao bello");
+        em.persist(orderRequest);
 
         em.flush();
 
