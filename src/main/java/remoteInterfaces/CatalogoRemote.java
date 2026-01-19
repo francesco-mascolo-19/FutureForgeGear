@@ -2,11 +2,8 @@ package remoteInterfaces;
 
 import enumerativeTypes.Categoria;
 import model.OrderManagement.Prodotto;
-
 //import javax.ejb.Remote;
 import jakarta.ejb.Remote;
-import model.UserManagement.Fornitore;
-
 import java.util.List;
 
 @Remote

@@ -1,10 +1,6 @@
 package model.RequestManagement;
 
 import jakarta.persistence.*;
-import model.OrderManagement.Prodotto;
-import model.UserManagement.Fornitore;
-import model.UserManagement.Magazziniere;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,7 +21,7 @@ public class ProductRequest extends Request implements Serializable {
     }
      */
 
-    public ProductRequest(int magazziniereID, int fornitoreID, LocalDateTime dataOra, int prodottoRichiestoID, int quantita) {
+    public ProductRequest(Long magazziniereID, Long fornitoreID, LocalDateTime dataOra, int prodottoRichiestoID, int quantita) {
         super(magazziniereID, fornitoreID, dataOra);
         this.prodottoRichiestoID = prodottoRichiestoID;
         this.quantita=quantita;

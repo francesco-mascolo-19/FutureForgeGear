@@ -19,7 +19,6 @@
 
 <%
     Ordine ordine = (Ordine) session.getAttribute("order");
-    List<String> serializedItems= (List<String>) request.getAttribute("itemsCart");
     if (ordine != null) {
 %>
 
