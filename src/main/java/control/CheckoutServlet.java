@@ -55,6 +55,6 @@ public class CheckoutServlet extends HttpServlet {
 
         session.removeAttribute("cart");
 
-        response.sendRedirect("confirmOrder.jsp");
+        response.sendRedirect("Spedizione.jsp");
     }
 }

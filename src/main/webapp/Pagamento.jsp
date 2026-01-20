@@ -73,6 +73,11 @@
 </head>
 <body>
 
+<h2>Conferma i dettagli di spedizione</h2>
+
+<p><strong>Indirizzo:</strong> <%= session.getAttribute("indirizzo") %></p>
+<p><strong>Metodo di Consegna:</strong> <%= session.getAttribute("metodoConsegna") %></p>
+
 
 <div class="container">
     <div class="payment-card">
