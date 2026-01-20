@@ -37,46 +37,42 @@
         <div class="col-12 col-md-6 col-lg-4 gy-3">
             <div class="w-100 carta">
                 <a href="#"></a>
+                <a href="infoProduct?productId=<%= p.getId() %>">
+                    <div class="card-body">
 
-                <div class="card-body">
-
-                    <% if (p.getImageBytes() != null) { %>
-                    <img src="data:image/png;base64,<%= java.util.Base64.getEncoder().encodeToString(p.getImageBytes()) %>"
-                         alt="Immagine prodotto" width="150" height="150">
-                    <% } else { %>
-                    <p>Immagine non disponibile</p>
-                    <% } %>
-
-
-                    <h5 class="card-title"><%= p.getNome() %></h5>
-                    <h6 class="stock">
-                        <b>Stock:</b>
-                        <% if (p.getDisponibilita() != 0) { %>
-                        <%= p.getDisponibilita() %>
-                        <% } else { %>
-                        <b><font color="red">Out of Stock</font></b>
-                        <% } %>
-                    </h6>
-
-                    <div class="mt-3 justify-content-between bordo">
-                        <% if (p.getDisponibilita() != 0) { %>
-
-                        <% } else { %>
-                        <p class="card-text"><b><font color="red">ACQUISTO NON DISPONIBILE</font></b></p>
-                        <% } %>
-                    </div>
+                            <% if (p.getImageBytes() != null) { %>
+                        <img src="data:image/png;base64,<%= java.util.Base64.getEncoder().encodeToString(p.getImageBytes()) %>"
+                             alt="Immagine prodotto" width="150" height="150">
+                            <% } else { %>
+                        <p>Immagine non disponibile</p>
+                            <% } %>
 
 
-                </div>
+                        <h5 class="card-title"><%= p.getNome() %></h5>
+                        <h6 class="stock">
+
+                            <b>Stock:</b>
+                            <% if (p.getDisponibilita() != 0) { %>
+                            <%= p.getDisponibilita() %>
+
+                            <% } else { %>
+                            <p class="card-text"><b><font color="red">ACQUISTO NON DISPONIBILE</font></b></p>
+                            <% } %>
+                        </h6>
+                </a>
+
+
+
             </div>
         </div>
-
-        <%
-                }
-            }
-        %>
     </div>
-    <% } %>
+
+    <%
+            }
+        }
+    %>
+</div>
+<% } %>
 </div>
 <%
     }
