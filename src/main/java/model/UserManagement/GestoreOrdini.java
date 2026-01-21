@@ -1,10 +1,10 @@
 package model.UserManagement;
 
-
+import enumerativeTypes.Ruolo;
+import enumerativeTypes.Stato;
 import jakarta.persistence.*;
 import model.OrderManagement.Ordine;
 import model.OrderManagement.Prodotto;
-import enumerativeTypes.Stato;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class GestoreOrdini extends Utente implements Serializable {
     }
 
     // Constructor with basic fields
-    public GestoreOrdini(String nome, String cognome, String email, String username, String password) {
-        super(nome, cognome, email, username, password);
+    public GestoreOrdini(String nome, String cognome, String email, String password) {
+        super(nome, cognome, email, password, Ruolo.GESTOREORDINI);
         this.listaOrdini = new ArrayList<>();
     }
 
@@ -38,22 +38,26 @@ public class GestoreOrdini extends Utente implements Serializable {
         ordine.setStato(stato);
     }
 
-    public List<Long> getOrdini() {
+    /*public List<Long> getOrdini() {
         return listaOrdini;
     }
+    */
+
     public void setOrdini(List<Long> ordiniID) {
         this.listaOrdini = ordiniID;
     }
     public void aggiungiOrdine(Ordine ordine){
         listaOrdini.add(ordine.getId());
-
-    public void removeOrdine(Ordine ordine){
-            listaOrdini.remove(ordine.getId());
     }
+    public void removeOrdine(Ordine ordine){
+        listaOrdini.remove(ordine.getId());
+    }
+
 
     @Override
     public String toString() {
         return super.toString();
-
     }
+
+
 }
