@@ -19,9 +19,6 @@ public class Indirizzo implements Serializable {
         this.CAP = CAP;
     }
 
-    public Indirizzo() {
-    }
-
     public void setCitta(String citta) { this.citta = citta; }
     public void setProvincia(String provincia) {this.provincia = provincia;}
     public void setStato(String stato) {this.stato = stato;}
