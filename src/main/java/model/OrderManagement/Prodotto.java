@@ -2,13 +2,18 @@ package model.OrderManagement;
 
 import enumerativeTypes.Categoria;
 import jakarta.persistence.*;
+import model.UserManagement.FornitoreDTO;
+
+import java.io.Serializable;
+
+import enumerativeTypes.Categoria;
+import jakarta.persistence.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.Arrays;
-
 
 @NamedQueries({
         @NamedQuery(name="TROVA_TUTTI", query="SELECT p FROM Prodotto p"),
@@ -40,9 +45,7 @@ public class Prodotto implements Serializable {
     private String descrizione;
     private Double prezzo;
     //private ImageIcon image;
-    @Lob
-    @Column(name = "image", columnDefinition = "LONGBLOB")
-    private byte[] image;
+    @Lob private byte[] image;
     private Categoria categoria;
 
     private int disponibilita;

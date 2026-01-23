@@ -51,10 +51,10 @@ public class CheckoutServlet extends HttpServlet {
         session.setAttribute("orders", orders);
 
         List<ItemCart> items = cart.getItems();
-        request.setAttribute("itemsCart", items);
+        request.setAttribute("items", items);
 
         session.removeAttribute("cart");
 
-        response.sendRedirect("confirmOrder.jsp");
+        response.sendRedirect("Spedizione.jsp");
     }
 }

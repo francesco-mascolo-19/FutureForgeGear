@@ -17,7 +17,7 @@
             // Aggiunge spazi ogni 4 cifre
             input.value = value.replace(/(\d{4})/g, '$1 ').trim();
         }
-
+        /*validazione dei vari campi dei metodi di pagamento prima dell'invio alla servlet apposita*/
         function validateForm() {
             let method = document.getElementById("paymentMethod").value;
 
@@ -72,6 +72,11 @@
     </script>
 </head>
 <body>
+
+<h2>Conferma i dettagli di spedizione</h2>
+
+<p><strong>Indirizzo:</strong> <%= session.getAttribute("indirizzo") %></p>
+<p><strong>Metodo di Consegna:</strong> <%= session.getAttribute("metodoConsegna") %></p>
 
 
 <div class="container">
