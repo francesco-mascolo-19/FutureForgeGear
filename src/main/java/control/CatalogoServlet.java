@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.OrderManagement.Prodotto;
 import remoteInterfaces.CatalogoRemote;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class CatalogoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         System.out.println("Catalogo: \n");
-        List<Prodotto> prodotti=catalogo.getProducts();
+        List<Prodotto> prodotti=catalogo.getProductsInCatalogo();
         System.out.println(prodotti);
 
         for(Prodotto p:prodotti){
