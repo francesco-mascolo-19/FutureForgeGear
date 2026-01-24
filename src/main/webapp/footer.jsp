@@ -1,39 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-    <link  rel="stylesheet" href="css/footer.css">
-    <title>Footer</title>
-</head>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" ></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
 
-
-
-<br><br><br>
-<body>
-<div class="footer">
-    <div class="container">
-        <div class="box box1">
-            <h3>Servizi</h3>
-            <ul>
-                <li><a href="./Errore404.jsp">Privacy Policy</a></li>
-                <li><a href="./Errore404.jsp">Termini e Condizioni</a></li>
-            </ul>
+<footer>
+    <div class="container1">
+        <div class="logo">
+            <img src="image/ffglogo.png" >
         </div>
-        <div class="box box2">
-            <h3>Autori</h3>
-            <ul>
-                <li><a href="https://github.com/francesco-mascolo-19">Francesco Mascolo</a></li>
-                <li><a href="https://github.com/zFrancesco03">Francesco Lamanna</a></li>
-                <li><a href="https://github.com/zGigiMz">Luigi Mazza</a></li>
-            </ul>
-        </div>
-        <div class="box box3">
-            <h3>FutureForgeGear</h3>
+        <div class="copyright">
+            <p>&copy; 2025 FUTURE FORGE GEAR. Tutti i diritti riservati.<a href="privacyPolicy.jsp"> Privacy policy</a> Developed by: F.Mascolo F.Lamanna L.Mazza</p>
+
         </div>
     </div>
-    <p class="copyright" id="na">FutureForgeGear © 2026</p>
-</div>
-</body>
-
-</html>
+</footer>
