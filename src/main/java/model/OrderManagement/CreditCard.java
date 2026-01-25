@@ -17,9 +17,9 @@ public class CreditCard {
     public String getTitolare() {
         return titolare;
     }
-    /*le varie informazioni non possono essere recuperate per garantire sicurezza dei dati
 
-     */
+
+
     public boolean payWithCard(double amount) {
         if (amount >= 0 && amount <= 3000) {
             System.out.println("Pagamento di " + amount + "€ effettuato con la carta di credito è andato a buon fine");

@@ -86,7 +86,7 @@ public class AcquistoControl extends HttpServlet {
                     request.setAttribute("card-holder", titolareCarta);
                     request.setAttribute("scadenzaCarta",scadenzaCarta);
                     request.setAttribute("cvv", cvv);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/ConfermaOrdine.jsp");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmOrder.jsp");
                     dispatcher.forward(request, response);
                 }
                 else {
