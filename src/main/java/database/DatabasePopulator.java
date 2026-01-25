@@ -51,6 +51,15 @@ public class DatabasePopulator {
         em.merge(gestoreOrdini);
     }
 
+    // Creazione di un admin
+    /*Admin admin = new Admin();
+        admin.setNome("Admin User");
+        admin.setEmail("admin@example.com");
+        admin.setPassword("admin123");
+        admin.setPermessi("GESTIONE_COMPLETA");
+        admin.setRuolo("ADMIN"); */
+    // record
+
 
 
     Fornitore fornitore1= new Fornitore("Mario", "Rossi", "mario.rossi@example.com", "password");
@@ -60,7 +69,7 @@ public class DatabasePopulator {
     /* Prodotti */
 
     //COMPUTER FISSI
-    Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060888", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  ImageUtil.readAndCompressImage("images/pcfisso/pcfisso3.jpg") ,Categoria.FISSI, 3, true, true);
+    Prodotto p1=new Prodotto("Computer Gaming Ryzen 7 – RTX 4060", "PC da gaming ad alte prestazioni con processore Ryzen 7 di ultima generazione, ideale per giochi AAA in Full HD e 2K. Raffreddamento silenzioso e case RGB.", 1299.99,  ImageUtil.readAndCompressImage("images/pcfisso/pcfisso3.jpg") ,Categoria.FISSI, 3, true, true);
     Prodotto p2=new Prodotto("Computer da Ufficio Intel i5", "Desktop affidabile, silenzioso e a basso consumo, perfetto per studio, smart working e software da ufficio. Avvio rapido e massima stabilità.", 649.99,  ImageUtil.readAndCompressImage("images/pcfisso/pcfisso5.jpg") ,Categoria.FISSI, 5, true, true);
     Prodotto p3=new Prodotto("Workstation Creativa Ryzen 9", "Potente workstation progettata per editing video, rendering 3D e grafica professionale. Elevate prestazioni multi-core e memoria ad alta velocità.", 1799.9, ImageUtil.readAndCompressImage("images/pcfisso/pcfisso4.jpg") ,Categoria.FISSI, 2, true, true);
     Prodotto p4=new Prodotto("Computer Compatto Mini-ITX", "PC compatto adatto a casa e ufficio, veloce e pratico, con consumi ridotti. Perfetto per navigazione, streaming e applicazioni leggere.", 499.99, ImageUtil.readAndCompressImage("images/pcfisso/pcfisso6.jpg") ,Categoria.FISSI, 4, true, true);
@@ -95,8 +104,8 @@ public class DatabasePopulator {
     /*
     List<Prodotto> prodotti = Arrays.asList(p1,p2, p3, p4);
     Magazzino magazzino= new Magazzino(ind, prodotti);*/
-    Magazzino magazzino= new Magazzino(ind, null);
-    Magazziniere magazziniere = new Magazziniere("Luigi","Mazza","lmazza@geg.it","password", magazzino);
+    Magazzino magazzino= new Magazzino(ind);
+    Magazziniere magazziniere = new Magazziniere("Luigi","Bianchi","lbianchi@geg.it","password", magazzino);
 
 
 
@@ -113,7 +122,7 @@ public class DatabasePopulator {
 
     @PostConstruct
     public void populateDB(){
-        System.out.println("Ho iniziato il popolamento ! \n");
+        System.out.println("HO INIZIATO IL POPOLAMENTOOOOOOOOO!! \n");
 
         em.createQuery("DELETE FROM Prodotto p").executeUpdate();
         em.createQuery("DELETE FROM Fornitore f").executeUpdate();

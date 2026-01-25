@@ -4,18 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import enumerativeTypes.Stato;
 import jakarta.persistence.*;
+import model.UserManagement.GestoreOrdini;
 
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import model.UserManagement.GestoreOrdini;
+
 
 @NamedQueries({
         @NamedQuery(name="Ordine.TROVA_TUTTI", query="SELECT o FROM Ordine o"),
-        @NamedQuery(name="Ordine.TROVA_PER_ID_GESTORE", query="SELECT o FROM Ordine o WHERE o.idGestore = :idGestore "),
         @NamedQuery(name="Ordine.TROVA_PER_ID", query="SELECT o FROM Ordine o WHERE o.id = :id "),
+        @NamedQuery(name="Ordine.TROVA_PER_ID_GESTORE", query="SELECT o FROM Ordine o WHERE o.idGestore = :idGestore "),
         @NamedQuery(name="Ordine.TROVA_PER_UTENTE", query="SELECT o FROM Ordine o WHERE o.userId = :userId"),
         @NamedQuery(name="Ordine.TROVA_PER_DATA", query="SELECT o FROM Ordine o WHERE o.date =:date "),
         @NamedQuery(name="Ordine.TROVA_PER_STATO", query="SELECT o FROM Ordine o WHERE o.stato =:stato "),
@@ -34,6 +35,7 @@ public class Ordine implements Serializable {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> items;
+
     private Long idGestore;
 
     public Ordine() {}
@@ -94,8 +96,20 @@ public class Ordine implements Serializable {
     public void setStato(Stato stato) {
         this.stato = stato;
     }
+
     public Long getIdGestore() { return idGestore; }
     public void setIdGestore(Long idGestore) { this.idGestore = idGestore; }
     public void setIdGestore(GestoreOrdini gestore) { this.idGestore = gestore.getId(); }
 
+
+    @Override
+    public String toString() {
+        return "Ordine:[ "+
+                " Id:"+id+
+                ", totale:"+totale+
+                ", UserID:"+userId+
+                ", Stato:"+stato+
+                ", Gestore:"+idGestore+
+                " ]";
+    }
 }
