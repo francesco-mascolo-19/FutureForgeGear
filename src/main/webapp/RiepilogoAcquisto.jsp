@@ -1,10 +1,11 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="model.OrderManagement.ItemCart, model.OrderManagement.Prodotto, java.util.List" %>
 
 <html>
 <head>
     <title>Riepilogo Acquisto</title>
-    <link rel="stylesheet" type="text/css" href="Riepilogo.css">
+    <link rel="stylesheet" type="text/css" href="style/Riepilogo.css">
 </head>
 <body>
 <div class="container">
@@ -40,12 +41,14 @@
         </tr>
         <%
             }
-        } else {
+        }
+        else {
         %>
         <tr>
             <td colspan="4">Nessun prodotto nel riepilogo.</td>
         </tr>
-        <% } %>
+        <% }
+            session.removeAttribute("items");%>
         </tbody>
     </table>
 
@@ -62,10 +65,13 @@
         }
     %>
 
-    <h3>Totale da Pagare</h3>
+
     <p><strong>Totale:</strong> €<%= String.format("%.2f", totale) %></p>
 
-    <a href="Pagamento.jsp"><button>Procedi al Pagamento</button></a>
+    <div class="button-container">
+        <a href="home2.jsp"><button class="payment-button">Ritorna alla Home</button></a>
+    </div>
 </div>
 </body>
 </html>
+
