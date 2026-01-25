@@ -9,8 +9,8 @@ import jakarta.persistence.TypedQuery;
 import model.OrderManagement.ItemCartDTO;
 import model.OrderManagement.Ordine;
 import enumerativeTypes.Stato;
-import remoteInterfaces.OrderServiceRemote;
 import model.UserManagement.GestoreOrdini;
+import remoteInterfaces.OrderServiceRemote;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class OrderService implements OrderServiceRemote {
     @Override
     public Ordine addOrder(Ordine order) {
         em.persist(order);
-        em.flush();
+        em.flush(); // Assicurati che l'ID venga generato
         System.out.println("Ordine salvato con ID: " + order.getId());
         return order;
     }
@@ -54,8 +54,8 @@ public class OrderService implements OrderServiceRemote {
     public List<Ordine> findOrdersByCostumer(long userId) {
         TypedQuery<Ordine> query=em.createNamedQuery("Ordine.TROVA_PER_UTENTE", Ordine.class);
         query.setParameter("userId", userId);
-        List<Ordine> orders = query.getResultList();
-        System.out.println("Ordini trovati per l'utente " + userId +": " + order.size());
+        List<Ordine> orders=query.getResultList();
+        System.out.println("Ordini trovati per l'utente " + userId + ": " + orders.size());
         return orders;
     }
 
@@ -107,4 +107,5 @@ public class OrderService implements OrderServiceRemote {
         }
         return items;
     }
+
 }
