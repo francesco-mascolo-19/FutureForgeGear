@@ -1,14 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ page import="model.UserManagement.Utente" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.OrderManagement.Ordine" %>
-<%@ page import="model.UserManagement.Utente" %>
-<%@ page import="model.UtenteDao" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="java.util.*" %>
-<%@ page import="model.*" %>
-<%@ page import="model.OrderManagement.Prodotto" %>
-
+<%@ page import="enumerativeTypes.Ruolo" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     // Recupera l'oggetto utente dalla sessione
@@ -19,19 +13,45 @@
         return;
     }
 
-    List<Ordine> orders = (List<Ordine>) session.getAttribute("orders");
+
 %>
 <html>
 <head>
     <title>Profilo</title>
-    <link rel="stylesheet" href="StyleProfile.css">
+    <link rel="stylesheet" href="style/StyleProfile.css">
 </head>
 <body>
 
 <header class="header">
     <nav class="navbar">
-        <div class="navbar_item"><a href="home2.jsp">Home</a></div>
-        <div class="navbar_item"><a href="#">Richieste</a></div>
+
+
+        <div class="navbar_item"><a href="Profile.jsp">Profilo</a></div>
+        <%
+            if(utente.getRuolo() == Ruolo.MAGAZZINIERE){
+        %>
+
+
+        <!-- Magazziniere-->
+        <div class="navbar_item"><a href="magazzinoProdotti">Magazzino</a></div>
+        <div class="navbar_item"><a href="ProductNotInMagazzino">Aggiungi prodotti in Magazzino</a></div>
+        <div class="navbar_item"><a href="ordini">Gestisci ordini</a></div>
+        <%}%>
+        <%
+            if(utente.getRuolo() == Ruolo.FORNITORE){
+        %>
+        <!-- Fornitore-->
+        <div class="navbar_item"><a href="request">Richieste</a></div>
+        <div class="navbar_item"><a href="CreaProdotto.jsp">Crea Prodotto</a></div>
+        <%}%>
+        <%
+            if(utente.getRuolo() == Ruolo.GESTOREORDINI){
+        %>
+        <!-- Geestore Ordini-->
+        <div class="navbar_item"><a href="request">Richieste</a></div>
+        <div class="navbar_item"><a href="ordini">Gestisci ordini</a></div>
+        <%}%>
+        <div class="navbar_item"><a href="logout.jsp">Logout</a></div>
     </nav>
 </header>
 
@@ -42,49 +62,12 @@
 
 <div class="profile-info hidden" id="profile-info">
     <h2>Informazioni Account</h2>
-    <p><strong>Username:</strong> <%= utente.getUsername() %></p>
+    <p><strong>Nome:</strong> <%= utente.getNome() %> <%= utente.getCognome() %></p>
     <p><strong>Email:</strong> <%= utente.getEmail() %></p>
+    <p><strong>Ruolo:</strong> <%= utente.getRuolo() %></p>
     <p><strong>Password:</strong> <%= utente.getPassword() %></p>
 </div>
 
-<!-- Sezione di riepilogo degli ordini effettuati. -->
-<div class="orders-section">
-    <h2>I tuoi ordini</h2>
-    <%
-        if (orders == null || orders.isEmpty()) {
-    %>
-    <p>Non hai effettuato ancora un ordine.</p>
-    <%
-    } else {
-    %>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>ID Ordine</th>
-            <th>Data</th>
-            <th>Totale</th>
-            <th>Stato</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            for (Ordine ordine : orders) {
-        %>
-        <tr>
-            <td><%= ordine.getId() %></td>
-            <td><%= ordine.getDate() %></td>
-            <td><%= ordine.getTotale() %> €</td>
-            <td><%= ordine.getStato() %></td>
-        </tr>
-        <%
-            }
-        %>
-        </tbody>
-    </table>
-    <%
-        }
-    %>
-</div>
 
 <script>
     function toggleProfileInfo() {
@@ -94,3 +77,4 @@
 </script>
 </body>
 </html>
+```
