@@ -1,10 +1,6 @@
 package control;
-import model.AcquistoDAO;
 import model.OrderManagement.Cart;
-import model.OrdineDAO;
 import model.OrderManagement.Prodotto;
-import model.ProductDao;
-import model.DettagliOrdineDAO;
 
 import java.io.IOException;
 import java.sql.SQLException;

@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import model.OrderManagement.Cart;
 import model.OrderManagement.Prodotto;
-import model.ProductDao;
 
 /**
  * Servlet implementation class ProductControl

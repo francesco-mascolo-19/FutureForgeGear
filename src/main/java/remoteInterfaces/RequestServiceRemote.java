@@ -4,11 +4,11 @@ import jakarta.ejb.Remote;
 import model.RequestManagement.Request;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Remote
 public interface RequestServiceRemote {
+
     void addRequest(Request request);
     void removeRequest(Request request);
     void updateRequest(Request request);

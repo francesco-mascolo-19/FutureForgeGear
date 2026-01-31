@@ -1,17 +1,20 @@
 package service;
 
+import enumerativeTypes.StatoRichiesta;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.Order;
 import model.OrderManagement.Prodotto;
+import model.RequestManagement.OrderRequest;
+import model.RequestManagement.ProductRequest;
 import model.RequestManagement.Request;
 import remoteInterfaces.RequestServiceRemote;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import enumerativeTypes.StatoRichiesta;
 
 @Stateless
 public class RequestService implements RequestServiceRemote {
@@ -27,7 +30,17 @@ public class RequestService implements RequestServiceRemote {
 
     @Override
     public void removeRequest(Request request) {
-        em.remove(request);
+
+        if (request instanceof ProductRequest) {
+            ProductRequest managedRequest = em.merge((ProductRequest) request);
+            em.remove(managedRequest);
+        }
+
+        if (request instanceof OrderRequest) {
+            OrderRequest managedRequest = em.merge((OrderRequest) request);
+            em.remove(managedRequest);
+        }
+
     }
 
     @Override
@@ -86,11 +99,12 @@ public class RequestService implements RequestServiceRemote {
         TypedQuery<Request> query=  em.createNamedQuery("Request.TROVA_PER_MAGAZZINIERE", Request.class);
         query.setParameter("magazziniereID", magazziniereID);
         return query.getResultList();
+    }
 
     @Override
-        public List<Request> findByDestinatario(Long destinatarioID) {
-            TypedQuery<Request> query=  em.createNamedQuery("Request.TROVA_PER_DESTINATARIO", Request.class);
-            query.setParameter("destinatarioID", destinatarioID);
-            return query.getResultList();
+    public List<Request> findByDestinatario(Long destinatarioID) {
+        TypedQuery<Request> query=  em.createNamedQuery("Request.TROVA_PER_DESTINATARIO", Request.class);
+        query.setParameter("destinatarioID", destinatarioID);
+        return query.getResultList();
     }
 }

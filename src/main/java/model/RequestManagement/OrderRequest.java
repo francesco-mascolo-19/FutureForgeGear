@@ -26,16 +26,16 @@ public class OrderRequest extends Request implements Serializable {
         this.ordineID = ordineID;
     }
 
-    public Long getOrdineID() { {
+    public Long getOrdineID() {
         return ordineID;
     }
-        public void setOrdineID(Long ordineID) {
+    public void setOrdineID(Long ordineID) {
         this.ordineID = ordineID;
     }
 
     @Override
     public String toString() {
-            return "OrderRequest: { "+super.toString() + ", OrdineID='" + ordineID + '\'' + '}';
+        return "OrderRequest: { "+super.toString() + ", OrdineID='" + ordineID + '\'' + '}';
     }
 
 }

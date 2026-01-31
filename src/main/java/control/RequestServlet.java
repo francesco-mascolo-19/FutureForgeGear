@@ -9,15 +9,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.OrderManagement.Ordine;
+import model.OrderManagement.Prodotto;
 import model.RequestManagement.OrderRequest;
 import model.RequestManagement.ProductRequest;
 import model.RequestManagement.Request;
 import model.UserManagement.GestoreOrdini;
 import model.UserManagement.Utente;
+import remoteInterfaces.CatalogoRemote;
 import remoteInterfaces.OrderServiceRemote;
 import remoteInterfaces.RequestServiceRemote;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 public class RequestServlet extends HttpServlet {
 
     @EJB RequestServiceRemote requestServiceRemote;
+    @EJB CatalogoRemote catalogo;
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,7 +47,9 @@ public class RequestServlet extends HttpServlet {
                 System.out.println(richieste);
             }
 
-            if (utente.getRuolo().equals(Ruolo.FORNITORE)) {
+
+
+            if (utente.getRuolo() != null && utente.getRuolo().equals(Ruolo.FORNITORE)){
                 //Selezionamo tutti i tipi di Richiesta che siano ProductRequest
                 List<ProductRequest> richieste = requestServiceRemote.findByDestinatario(userID)
                         .stream()
@@ -51,8 +57,20 @@ public class RequestServlet extends HttpServlet {
                         .map(r -> (ProductRequest) r)
                         .collect(Collectors.toList());
 
+                List<Prodotto>  prodotti= new ArrayList<Prodotto>();
+                for (ProductRequest pr: richieste){
+                    prodotti.add( catalogo.findProductByID(pr.getProdottoRichiestoID()) );
+                }
+
+                request.setAttribute("prodotti", prodotti);
+                request.setAttribute("richiesteFornitore", richieste);
+                request.getRequestDispatcher("/Fornitore.jsp").forward(request, response);
+
                 System.out.println(richieste);
             }
+
+
+
 
             if (utente.getRuolo().equals(Ruolo.GESTOREORDINI)){
                 //Selezionamo tutti i tipi di Richiesta che siano OrderRequest
@@ -63,6 +81,8 @@ public class RequestServlet extends HttpServlet {
                         .collect(Collectors.toList());
 
                 System.out.println(richieste);
+                request.setAttribute("richiesteOrdini", richieste);
+                request.getRequestDispatcher("/GestoreOrdiniRichieste.jsp").forward(request, response);
 
             }
 
@@ -71,7 +91,7 @@ public class RequestServlet extends HttpServlet {
             if (
                     utente.getRuolo().equals(Ruolo.CLIENTE)
             ){
-                System.out.println("Nah, you aint right on here nigga");
+                System.out.println("Non sei nel posto giusto");
             }
 
 
