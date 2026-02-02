@@ -13,13 +13,14 @@ import model.UserManagement.Utente;
 import remoteInterfaces.CatalogoRemote;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+@WebServlet("/ProductNotInMagazzino")
+public class ProductNotInMagazzino extends HttpServlet {
 
-@WebServlet("/magazzinoProdotti")
-public class MagazzinoProdottiServlet extends HttpServlet {
-
-    @EJB CatalogoRemote catalogo;
+    @EJB
+    CatalogoRemote catalogo;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -28,19 +29,26 @@ public class MagazzinoProdottiServlet extends HttpServlet {
         if (session != null) {
 
             Utente utente = (Utente) session.getAttribute("loggedUser");
-            Long userID= utente.getId();
 
             if (utente.getRuolo().equals(Ruolo.MAGAZZINIERE)){
 
-                List<Prodotto> prodotti= catalogo.getProductsInMagazzino();
-                System.out.println(prodotti);
-                request.setAttribute("prodotti", prodotti);
-                request.getRequestDispatcher("/Magazziniere.jsp").forward(request, response);
+                List<Prodotto> tuttiProdotti= catalogo.getProducts();
+                List<Prodotto> prodottiNonInMagazzino = new ArrayList<Prodotto>();
+
+                for (Prodotto p: tuttiProdotti){
+                    if (!p.isInMagazzino()){
+                        prodottiNonInMagazzino.add(p);
+                    }
+                }
+
+                request.setAttribute("prodotti", prodottiNonInMagazzino);
+                request.getRequestDispatcher("/prodottiFornitori.jsp").forward(request, response);
+
+
 
             }else{
                 System.out.println("Ruolo non corretto");
             }
-
 
         }else{
             response.getWriter().println("Sessione non esistente.");
@@ -48,4 +56,5 @@ public class MagazzinoProdottiServlet extends HttpServlet {
 
 
     }
+
 }
