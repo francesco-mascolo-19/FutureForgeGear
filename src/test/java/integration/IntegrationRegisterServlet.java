@@ -17,6 +17,7 @@ import static org.mockito.Mockito.*;
 
 class IntegrationRegisterServlet {
 
+    // Sottoclasse per esporre doPost (protected)
     private static class TestableRegisterServlet extends RegisterServlet {
         public void doPostPublic(HttpServletRequest req, HttpServletResponse resp) throws Exception {
             super.doPost(req, resp);
@@ -25,14 +26,16 @@ class IntegrationRegisterServlet {
 
     private TestableRegisterServlet servlet;
 
+    // mock EJB
     private UserServiceRemote userService;
 
+    // mock web
     private HttpServletRequest request;
     private HttpServletResponse response;
 
     private void inject(Object target, String fieldName, Object value) {
         try {
-            Field f = target.getClass().getSuperclass().getDeclaredField(fieldName);
+            Field f = target.getClass().getSuperclass().getDeclaredField(fieldName); // field è in RegisterServlet
             f.setAccessible(true);
             f.set(target, value);
         } catch (Exception e) {
@@ -54,11 +57,13 @@ class IntegrationRegisterServlet {
 
     @Test
     void doPost_casoOk_chiamaAddUser_e_redirectHome() throws Exception {
+        // parametri utente
         when(request.getParameter("name")).thenReturn("Mario");
         when(request.getParameter("surname")).thenReturn("Rossi");
         when(request.getParameter("email")).thenReturn("mario.rossi@example.com");
         when(request.getParameter("password")).thenReturn("Password1");
 
+        // parametri indirizzo
         when(request.getParameter("stato")).thenReturn("Italia");
         when(request.getParameter("provincia")).thenReturn("NA");
         when(request.getParameter("citta")).thenReturn("Napoli");
@@ -66,14 +71,17 @@ class IntegrationRegisterServlet {
         when(request.getParameter("numCivico")).thenReturn("10");
         when(request.getParameter("cap")).thenReturn("80100");
 
+        // eseguo
         servlet.doPostPublic(request, response);
 
+        // catturo l'oggetto passato al service
         ArgumentCaptor<Cliente> captor = ArgumentCaptor.forClass(Cliente.class);
         verify(userService, times(1)).addUser(captor.capture());
 
         Cliente saved = captor.getValue();
         assertNotNull(saved);
 
+        // controlli base sui dati
         assertEquals("Mario", saved.getNome());
         assertEquals("Rossi", saved.getCognome());
         assertEquals("mario.rossi@example.com", saved.getEmail());
@@ -88,6 +96,7 @@ class IntegrationRegisterServlet {
         assertEquals(10, ind.getNumCivico());
         assertEquals(80100, ind.getCAP());
 
+        // redirect finale
         verify(response).sendRedirect("home.jsp");
     }
 
@@ -102,11 +111,12 @@ class IntegrationRegisterServlet {
         when(request.getParameter("provincia")).thenReturn("NA");
         when(request.getParameter("citta")).thenReturn("Napoli");
         when(request.getParameter("via")).thenReturn("Via Roma");
-        when(request.getParameter("numCivico")).thenReturn("X");
+        when(request.getParameter("numCivico")).thenReturn("X"); // non numerico
         when(request.getParameter("cap")).thenReturn("80100");
 
         assertThrows(NumberFormatException.class, () -> servlet.doPostPublic(request, response));
 
+        // non deve chiamare il service
         verify(userService, never()).addUser(any());
         verify(response, never()).sendRedirect("home.jsp");
     }
@@ -123,7 +133,7 @@ class IntegrationRegisterServlet {
         when(request.getParameter("citta")).thenReturn("Napoli");
         when(request.getParameter("via")).thenReturn("Via Roma");
         when(request.getParameter("numCivico")).thenReturn("10");
-        when(request.getParameter("cap")).thenReturn("ABC");
+        when(request.getParameter("cap")).thenReturn("ABC"); // non numerico
 
         assertThrows(NumberFormatException.class, () -> servlet.doPostPublic(request, response));
 

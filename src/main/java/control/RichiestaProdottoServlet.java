@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.OrderManagement.Ordine;
-import model.OrderManagement.Prodotto;
 import model.RequestManagement.ProductRequest;
 import model.UserManagement.Utente;
 import remoteInterfaces.CatalogoRemote;
@@ -17,91 +15,72 @@ import remoteInterfaces.RequestServiceRemote;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @WebServlet("/RichiestaProdottoServlet")
 public class RichiestaProdottoServlet extends HttpServlet {
 
-    @EJB RequestServiceRemote requestService;
-    @EJB CatalogoRemote catalogo;
+    @EJB
+    RequestServiceRemote requestService;
 
+    @EJB
+    CatalogoRemote catalogo;
+
+    private boolean isNullish(String s) {
+        return s == null || s.isBlank() || "null".equalsIgnoreCase(s) || "undefined".equalsIgnoreCase(s);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
 
+        if (session == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sessione non esistente.");
+            return;
+        }
 
+        Utente utente = (Utente) session.getAttribute("loggedUser");
+        if (utente == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Utente non autenticato.");
+            return;
+        }
 
+        if (!utente.getRuolo().equals(Ruolo.MAGAZZINIERE)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Ruolo non autorizzato.");
+            return;
+        }
 
-        if (session != null) {
+        Long userID = utente.getId();
 
-            Utente utente = (Utente) session.getAttribute("loggedUser");
-            Long userID= utente.getId();
+        String idParam = request.getParameter("idProd");              // (puoi anche eliminarlo, vedi sotto)
+        String idParamFornitore = request.getParameter("idFornitore");
+        String idParamProd = request.getParameter("idProd");      // ✅ CORRETTO
+        String quantityParam = request.getParameter("quantity");
+        String note = request.getParameter("note");               // opzionale
 
-            if (utente.getRuolo().equals(Ruolo.MAGAZZINIERE)){
+        if (idParamFornitore == null || idParamProd == null || quantityParam == null ||
+                idParamFornitore.isBlank() || idParamProd.isBlank() || quantityParam.isBlank() ||
+                "null".equalsIgnoreCase(idParamFornitore) || "null".equalsIgnoreCase(idParamProd)) {
+            response.sendError(400, "Errore: Dati mancanti o non validi.");
+            return;
+        }
 
+        try {
+            long idFornitore = Long.parseLong(idParamFornitore);
+            int idProd = Integer.parseInt(idParamProd);
+            int quantity = Integer.parseInt(quantityParam);
 
-                String idParam = request.getParameter("id");
-                String idParamFornitore = request.getParameter("idFornitore");
-                String idParamProd = request.getParameter("id");
-                String quantityParam = request.getParameter("quantity");
-                String note = request.getParameter("note"); // Leggi la nota
-
-                if (idParam == null || quantityParam == null) {
-                    response.getWriter().write("Errore: Dati mancanti.");
-                    return;
-                }
-
-                long id = Long.parseLong(idParam);
-                long idFornitore = Long.parseLong(idParamFornitore);
-                int idProd = Integer.parseInt(idParamProd);
-                int quantity = Integer.parseInt(quantityParam);
-
-                // Logica per gestire la richiesta, ad esempio aggiorna la disponibilità o invia una notifica
-                ProductRequest productRequest= new ProductRequest(userID, idFornitore, LocalDateTime.now(),  idProd,quantity, note);
-                requestService.addRequest(productRequest);
-
-                /*
-                Prodotto prodotto= catalogo.findProductByID(idProd);
-                if (prodotto != null) {
-
-                    if( !prodotto.isInMagazzino() ){
-                        prodotto.setInMagazzino(true);
-                        // Salva lo stato nel database
-                        catalogo.updateProduct(prodotto);
-                        System.out.println("Prodotto aggiunto in magazzino");
-                    }
-
-                    } else {
-                    response.getWriter().write("Prodotto non trovato");
-                }
-
-                 */
-
-
-
-
-
-
-                System.out.println("Richiesta aggiunto");
-
-
-
-
+            if (quantity <= 0) {
+                response.sendError(400, "Errore: Dati mancanti o non validi.");
+                return;
             }
 
-            else{
-                System.out.println("Ruolo non accettato");
-            }
+            ProductRequest productRequest = new ProductRequest(userID, idFornitore, LocalDateTime.now(), idProd, quantity, note);
+            requestService.addRequest(productRequest);
 
-
-        }else{
-            response.getWriter().println("Sessione non esistente.");
+            response.getWriter().write("OK");
+        } catch (NumberFormatException e) {
+            response.sendError(400, "Errore: Dati mancanti o non validi.");
         }
     }
-
-
-
-
-
-
 }

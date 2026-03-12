@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="model.OrderManagement.ItemCart, model.OrderManagement.Prodotto, java.util.List" %>
 

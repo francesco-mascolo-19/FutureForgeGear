@@ -18,7 +18,7 @@ public class PayPal {
 
 
     public boolean processPayment(double amount) {
-        if (amount >= 0 && amount <= 1000) {
+        if (amount > 0 && amount <= 1000) {
             System.out.println("Pagamento di " + amount + "€ avvenuto con successo ed effettuato con PayPal");
             return true;
 

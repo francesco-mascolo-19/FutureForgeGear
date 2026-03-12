@@ -16,6 +16,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration test (JPA + H2) per CartService
+ * Struttura coerente con IntegrationCatalogoService:
+ * - service = new ...
+ * - injectEntityManager(...)
+ * - pulizia DB in @BeforeEach
+ * - log minimale con System.out.println
+ */
 class IntegrationCartService extends JpaH2TestBase {
 
     private CartService service;
@@ -25,8 +33,10 @@ class IntegrationCartService extends JpaH2TestBase {
 
     private Cart newCart(long userId) {
         Cart c = new Cart();
+        // assumo esista setUserId(long)
         c.setUserId(userId);
 
+        // assicuro lista items non-null (se getItems() torna null)
         tryEnsureItemsList(c);
         return c;
     }
@@ -40,11 +50,13 @@ class IntegrationCartService extends JpaH2TestBase {
         p.setInCatalogo(true);
         p.setInMagazzino(true);
         p.setFornitore(1L);
+        // categoria non necessaria per questi test
         return p;
     }
 
     private ItemCart newItem(Prodotto prodotto, int qty) {
         ItemCart item = new ItemCart();
+        // assumo esistano i setter classici
         item.setProdotto(prodotto);
         item.setQuantity(qty);
         return item;
@@ -54,14 +66,20 @@ class IntegrationCartService extends JpaH2TestBase {
         try {
             List<ItemCart> items = cart.getItems();
             if (items == null) {
+                // prova a chiamare setItems(List) se esiste
                 Method setItems = cart.getClass().getMethod("setItems", List.class);
                 setItems.invoke(cart, new ArrayList<ItemCart>());
             }
         } catch (NoSuchMethodException e) {
-
+            // se non esiste setItems, proviamo a “toccare” getItems e sperare che l’entity inizializzi
+            // oppure lasciamo: in tal caso, nei test useremo una cart gestita da JPA (spesso non è null).
         } catch (Exception ignored) {}
     }
 
+    /**
+     * Collega ItemCart al Cart se esiste un setter (setCart / setCarrello / setCartId ecc.).
+     * È un helper "robusto" per adattarsi a naming diversi senza cambiare il test.
+     */
     private void tryLinkItemToCart(ItemCart item, Cart cart) {
         String[] candidateSetters = {"setCart", "setCarrello", "setCartRef", "setCar"};
         for (String s : candidateSetters) {
@@ -100,7 +118,7 @@ class IntegrationCartService extends JpaH2TestBase {
         service.addCart(cart);
         commitAndRestartTx();
 
-        int id = cart.getId();
+        int id = cart.getId(); // assumo PK int e getter getId()
         Cart found = service.findCartById(id);
 
         assertNotNull(found);
@@ -145,7 +163,7 @@ class IntegrationCartService extends JpaH2TestBase {
     }
 
     // ------------------------
-    // QUERY
+    // QUERY / COMPORTAMENTO
     // ------------------------
 
     @Test
@@ -169,12 +187,14 @@ class IntegrationCartService extends JpaH2TestBase {
 
         long userId = 500L;
 
+        // non persistiamo nulla prima
         Cart found = service.findCartByCostumer(userId);
         commitAndRestartTx();
 
         assertNotNull(found);
         assertEquals(userId, found.getUserId());
 
+        // verifica “concreta”: adesso deve esistere nel DB (altrimenti la persist nel catch non ha funzionato)
         Cart reloaded = em.find(Cart.class, found.getId());
         assertNotNull(reloaded);
         assertEquals(userId, reloaded.getUserId());
@@ -188,27 +208,34 @@ class IntegrationCartService extends JpaH2TestBase {
     void removeProductFromCart_rimuoveItemConProductId_e_merge_persistente() {
         System.out.println("cart: Rimozione Prodotto dal Carrello");
 
+        // prodotti
         Prodotto p1 = newProdotto("P1", 10.0);
         Prodotto p2 = newProdotto("P2", 20.0);
         em.persist(p1);
         em.persist(p2);
 
+        // cart
         Cart cart = newCart(600L);
         em.persist(cart);
 
+        // items
         ItemCart i1 = newItem(p1, 1);
         ItemCart i2 = newItem(p2, 1);
 
+        // collega item -> cart se serve nella vostra entity
         tryLinkItemToCart(i1, cart);
         tryLinkItemToCart(i2, cart);
 
+        // aggiungi alla lista del cart
         tryEnsureItemsList(cart);
         if (cart.getItems() == null) {
+            // fallback estremo: se getItems() è null e non c’è setItems, abort con messaggio chiaro
             fail("Cart.getItems() è null e non esiste setItems(List). Aggiungi inizializzazione lista in Cart o adatta il test.");
         }
         cart.getItems().add(i1);
         cart.getItems().add(i2);
 
+        // persist items se non c'è cascade
         try { em.persist(i1); } catch (Exception ignored) {}
         try { em.persist(i2); } catch (Exception ignored) {}
 
@@ -217,9 +244,11 @@ class IntegrationCartService extends JpaH2TestBase {
         int cartId = cart.getId();
         int productIdDaRimuovere = p1.getId();
 
+        // azione
         service.removeProductFromCart(cartId, productIdDaRimuovere);
         commitAndRestartTx();
 
+        // verifica: ricarico cart dal DB e controllo che resti solo p2
         Cart reloaded = em.find(Cart.class, cartId);
         assertNotNull(reloaded);
 
@@ -233,6 +262,7 @@ class IntegrationCartService extends JpaH2TestBase {
     void removeProductFromCart_seCartNonEsiste_nonFaNullPointer_e_nonCambiaNulla() {
         System.out.println("cart: Rimozione Carrello Inesistente");
 
+        // non esiste nessun cart con id 9999
         assertDoesNotThrow(() -> service.removeProductFromCart(9999, 1));
     }
 

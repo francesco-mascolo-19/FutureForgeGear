@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Ciccio Mascolo
-  Date: 31/01/2026
-  Time: 14:40
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.OrderManagement.Ordine" %>
@@ -32,7 +25,7 @@
         body, html {
             width: 100%;
             height: 100%;
-            background-color: #8B4000;
+            background-color: #16495c;
             font-size: 16px;
             font-family: 'Lobster', sans-serif;
             box-sizing: border-box;
@@ -188,7 +181,9 @@
                         // Aggiorna visivamente lo stato attuale nella tabella
                         document.getElementById("statoAttuale_" + ordineId).innerText = statoSelezionato;
                     } else {
-                        alert("Errore: " + data.message);
+                        const box = document.getElementById("msgBox");
+                        box.style.display = "block"; box.textContent = "Errore: " + (data.message || "Operazione non consentita");
+
                     }
                 })
                 .catch(error => console.error("Errore:", error));
@@ -236,7 +231,7 @@
 <div class="orders-section">
 
     <h2>Gestione Ordini</h2>
-
+    <div id="msgBox" style="display:none; margin:10px 0; padding:10px; border-radius:8px; border:1px solid #f5c2c7; background:#f8d7da; color:#842029;"></div>
     <table>
         <tr>
             <th>Id Ordine</th>

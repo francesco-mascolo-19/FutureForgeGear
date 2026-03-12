@@ -25,6 +25,11 @@ import static org.mockito.Mockito.*;
 
 class IntegrationCheckoutServlet extends JpaH2TestBase {
 
+    /**
+     * Sottoclasse per esporre doPost (protected).
+     * NOTA: i campi @EJB restano nella superclasse CheckoutServlet,
+     * quindi l'inject deve cercare anche nelle superclassi.
+     */
     private static class TestableCheckoutServlet extends CheckoutServlet {
         public void doPostPublic(HttpServletRequest req, HttpServletResponse resp) throws Exception {
             super.doPost(req, resp);
@@ -33,14 +38,20 @@ class IntegrationCheckoutServlet extends JpaH2TestBase {
 
     private TestableCheckoutServlet servlet;
 
+    // service REALE (usa H2 via EntityManager iniettato)
     private OrderService orderService;
 
+    // questo nel doPost non viene usato -> mock
     private CatalogoRemote catalogoRemote;
 
+    // mock web
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
 
+    /**
+     * Inject via reflection che risale la gerarchia (classe -> superclasse -> ...).
+     */
     private void inject(Object target, String fieldName, Object value) {
         try {
             Class<?> c = target.getClass();
@@ -70,28 +81,34 @@ class IntegrationCheckoutServlet extends JpaH2TestBase {
     void setUp() {
         servlet = new TestableCheckoutServlet();
 
+        // service reale + EntityManager H2 (dal base test)
         orderService = new OrderService();
         injectEntityManager(orderService, em);
 
         catalogoRemote = mock(CatalogoRemote.class);
 
+        // iniezione tipo @EJB (senza server)
         inject(servlet, "orderService", orderService);
         inject(servlet, "catalogoRemote", catalogoRemote);
 
+        // mock request/response/session
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
         when(request.getSession()).thenReturn(session);
 
+        // pulizia DB
         em.createQuery("delete from Ordine").executeUpdate();
         commitAndRestartTx();
     }
 
     @Test
     void doPost_casoOk_persisteOrdineInH2_e_redirectSpedizione() throws Exception {
+        // utente (non serve persisterlo per salvare Ordine: dentro Ordine avete solo userId)
         Utente utente = mock(Utente.class);
         when(utente.getId()).thenReturn(500L);
 
+        // carrello mock con 2 item
         Cart cart = mock(Cart.class);
 
         ItemCart item1 = mock(ItemCart.class);
@@ -109,16 +126,21 @@ class IntegrationCheckoutServlet extends JpaH2TestBase {
         when(cart.getItems()).thenReturn(List.of(item1, item2));
         when(cart.calculateTotal()).thenReturn(99.99);
 
+        // lista ordini già in sessione (evita NPE nel servlet)
         List<Ordine> ordersInSession = new ArrayList<>();
         when(session.getAttribute("orders")).thenReturn(ordersInSession);
 
+        // attributi sessione letti dal servlet
         when(session.getAttribute("loggedUser")).thenReturn(utente);
         when(session.getAttribute("cart")).thenReturn(cart);
 
+        // eseguo
         servlet.doPostPublic(request, response);
 
+        // commit per rendere visibile la persist su H2
         commitAndRestartTx();
 
+        // verifica che DB contenga 1 ordine
         List<Ordine> all = em.createNamedQuery("Ordine.TROVA_TUTTI", Ordine.class)
                 .getResultList();
 
@@ -132,11 +154,13 @@ class IntegrationCheckoutServlet extends JpaH2TestBase {
         assertNotNull(saved.getItems());
         assertEquals(2, saved.getItems().size());
 
+        // verifica session updates
         verify(session).setAttribute(eq("order"), any(Ordine.class));
         verify(session).setAttribute(eq("orders"), same(ordersInSession));
         verify(session).setAttribute(eq("items"), anyList());
         verify(session).removeAttribute("cart");
 
+        // redirect finale
         verify(response).sendRedirect("Spedizione.jsp");
     }
 }

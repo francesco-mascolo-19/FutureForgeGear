@@ -361,7 +361,7 @@ class IntegrationCatalogoService extends JpaH2TestBase {
     }
 
     // ------------------------
-    // METODI CON ID
+    // METODI CON Long ID
     // ------------------------
 
     @Test

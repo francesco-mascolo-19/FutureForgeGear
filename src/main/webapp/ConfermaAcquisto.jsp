@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -8,7 +7,7 @@
         body {
             text-align: center;
             font-family: Arial, sans-serif;
-            background-color: #8B4000;
+            background-color: #16495c;
             padding: 50px;
         }
         .message-box {

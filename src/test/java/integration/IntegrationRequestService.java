@@ -36,6 +36,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         service = new RequestService();
         injectEntityManager(service, em);
 
+        // pulizia (sottoclassi -> superclass)
         em.createQuery("delete from ProductRequest").executeUpdate();
         em.createQuery("delete from OrderRequest").executeUpdate();
         em.createQuery("delete from Request").executeUpdate();
@@ -46,6 +47,7 @@ class IntegrationRequestService extends JpaH2TestBase {
     // CRUD BASE
     // ------------------------
 
+    /** Verifica che addRequest persista e findAll veda entrambe le richieste. */
     @Test
     void addRequest_persiste_e_findAll_vedeLeRichieste() {
         log("crud: add + findAll");
@@ -65,6 +67,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> addRequest + findAll: persistenza e conteggio corretto");
     }
 
+    /** Verifica che updateRequest (merge) aggiorni davvero il campo message. */
     @Test
     void updateRequest_merge_aggiornaDavvero_message() {
         log("crud: merge (update message)");
@@ -87,6 +90,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> updateRequest: message aggiornato correttamente");
     }
 
+    /** Verifica che removeRequest su ProductRequest elimini davvero dal DB. */
     @Test
     void removeRequest_suProductRequest_rimuoveDavvero() {
         log("crud: remove ProductRequest");
@@ -109,6 +113,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> removeRequest(ProductRequest): rimozione avvenuta");
     }
 
+    /** Verifica che removeRequest su OrderRequest elimini davvero dal DB. */
     @Test
     void removeRequest_suOrderRequest_rimuoveDavvero() {
         log("crud: remove OrderRequest");
@@ -135,6 +140,7 @@ class IntegrationRequestService extends JpaH2TestBase {
     // FIND / NAMED QUERY
     // ------------------------
 
+    /** Verifica che findById trovi se esiste e lanci NoResultException se non esiste. */
     @Test
     void findById_esiste_ok_nonEsiste_NoResult() {
         log("query: findById (NoResult)");
@@ -153,6 +159,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> findById: trovato esistente e NoResult su id inesistente");
     }
 
+    /** Verifica che findAll ritorni tutte le richieste persistite. */
     @Test
     void findAll_ritornaTutto() {
         log("query: findAll");
@@ -168,6 +175,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> findAll: conteggio corretto");
     }
 
+    /** Verifica che findByMagazziniere filtri solo per l'id magazziniere richiesto. */
     @Test
     void findByMagazziniere_ritornaSoloQuelMagazziniere() {
         log("query: byMagazziniere");
@@ -191,6 +199,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> findByMagazziniere: filtra correttamente per magazziniere");
     }
 
+    /** Verifica che findByDestinatario filtri solo per l'id destinatario richiesto. */
     @Test
     void findByDestinatario_ritornaSoloQuelDestinatario() {
         log("query: byDestinatario");
@@ -214,6 +223,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> findByDestinatario: filtra correttamente per destinatario");
     }
 
+    /** Verifica che findByDate usi start inclusivo e end esclusivo. */
     @Test
     void findByDate_range_inclusivoStart_esclusivoEnd() {
         log("query: byDate range");
@@ -241,6 +251,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> findByDate: range [start, end) rispettato");
     }
 
+    /** Verifica che findByPostDate ritorni solo le richieste con data strettamente dopo il pivot. */
     @Test
     void findByPostDate_ritornaSoloDopoData() {
         log("query: dopo data");
@@ -259,6 +270,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> findByPostDate: solo date dopo pivot");
     }
 
+    /** Verifica che findByPreviousDate ritorni solo le richieste con data strettamente prima del pivot. */
     @Test
     void findByPreviousDate_ritornaSoloPrimaData() {
         log("query: prima data");
@@ -281,6 +293,7 @@ class IntegrationRequestService extends JpaH2TestBase {
     // METODI DI BUSINESS
     // ------------------------
 
+    /** Verifica che cambiaStato aggiorni lo stato da NON_ACCETTATO a ACCETTATO. */
     @Test
     void cambiaStato_accettaRichiesta_e_persistenza_statoDiventaAccettato() {
         log("business: cambiaStato");
@@ -307,6 +320,7 @@ class IntegrationRequestService extends JpaH2TestBase {
     // VALIDAZIONE QUANTITÀ RICHIESTA (Q)
     // ------------------------
 
+    /** Verifica che una richiesta prodotto con quantità < 1 sia rifiutata (error). */
     @Test
     void addRequest_productRequest_quantitaMinoreDiUno_nonValidaMaPersistita() {
         log("validation: Q < 1 (NOTA: service non valida, persiste comunque)");
@@ -327,6 +341,7 @@ class IntegrationRequestService extends JpaH2TestBase {
         System.out.println("OK -> Q < 1: con service attuale NON viene bloccata, viene persistita");
     }
 
+    /** Verifica che una richiesta prodotto con quantità >= 1 venga accettata e persistita (valid). */
     @Test
     void addRequest_productRequest_quantitaMaggioreUgualeUno_valid() {
         log("validation: Q >= 1 (valid)");

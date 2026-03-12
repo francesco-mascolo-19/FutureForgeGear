@@ -57,7 +57,7 @@
 
 <div class="container">
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Ultimo aggiornamento: <strong>29 Gennaio 2026</strong></p>
+    <p class="last-updated">Ultimo aggiornamento: <strong>1 Febbraio 2026</strong></p>
 
     <h2>1. Raccolta delle informazioni</h2>
     <p>Raccogliamo diversi tipi di informazioni per migliorare i nostri servizi, tra cui:</p>

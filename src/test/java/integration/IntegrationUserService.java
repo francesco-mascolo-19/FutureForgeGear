@@ -12,6 +12,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration test (JPA + H2) per UserService
+ * - stessa struttura dei vostri altri integration test
+ * - System.out.println minimale (solo concetto)
+ *
+ * NOTE SUL VOSTRO CODICE (emerge in integrazione):
+ * 1) UserService.findUserByUsername usa la NamedQuery "Utente.TROVA_PER_USERNAME"
+ *    ma nella vostra entity Utente ATTUALE quella NamedQuery NON esiste -> IllegalArgumentException.
+ * 2) UserService.isAdmin confronta u.getRuolo().equals("admin") ma getRuolo() ritorna un ENUM (Ruolo),
+ *    quindi il confronto con stringa è sempre false -> il test lo evidenzia.
+ */
 class IntegrationUserService extends JpaH2TestBase {
 
     private UserService service;
@@ -24,10 +35,11 @@ class IntegrationUserService extends JpaH2TestBase {
         for (Ruolo r : Ruolo.values()) {
             if (r.name().equalsIgnoreCase("ADMIN")) return r;
         }
-        return anyRuolo();
+        return anyRuolo(); // fallback se non esiste ADMIN nel vostro enum
     }
 
     private Utente newUtente(String nome, String cognome, String email, String password, Ruolo ruolo) {
+        // Utente attuale ha costruttore con Ruolo ma NON ha setRuolo
         return new Utente(nome, cognome, email, password, ruolo);
     }
 
@@ -53,8 +65,9 @@ class IntegrationUserService extends JpaH2TestBase {
         service.addUser(u);
         commitAndRestartTx();
 
+        // dopo persist l'id deve esistere
         long id = u.getId();
-        Utente found = service.findUserById(id);
+        Utente found = service.findUserById(id); // autoboxing long -> Long
         assertNotNull(found);
         assertEquals("mario@test.it", found.getEmail());
     }
@@ -160,7 +173,7 @@ class IntegrationUserService extends JpaH2TestBase {
         em.persist(newUtente("Carlo", "Z", "carlo@test.it", "pass", anyRuolo()));
         commitAndRestartTx();
 
-        Utente input = new Utente();
+        Utente input = new Utente(); // basta email uguale, il service usa solo email
         input.setEmail("carlo@test.it");
 
         assertTrue(service.isLogged(input));
@@ -173,6 +186,7 @@ class IntegrationUserService extends JpaH2TestBase {
         Utente input = new Utente();
         input.setEmail("ghost@test.it");
 
+        // isLogged chiama findUserByEmail che usa getSingleResult -> NoResultException
         assertThrows(NoResultException.class, () -> service.isLogged(input));
     }
 
@@ -187,6 +201,7 @@ class IntegrationUserService extends JpaH2TestBase {
         Utente input = new Utente();
         input.setEmail("root@test.it");
 
+        // Nel service: u.getRuolo().equals("admin") -> confronto enum vs string => false
         assertFalse(service.isAdmin(input));
     }
 }

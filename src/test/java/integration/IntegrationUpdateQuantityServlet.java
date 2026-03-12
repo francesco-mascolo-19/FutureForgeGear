@@ -16,6 +16,7 @@ import static org.mockito.Mockito.*;
 
 class IntegrationUpdateQuantityServlet {
 
+    // Sottoclasse per esporre doPost (protected)
     private static class TestableUpdateQuantityServlet extends UpdateQuantityServlet {
         public void doPostPublic(HttpServletRequest req, HttpServletResponse resp) throws Exception {
             super.doPost(req, resp);
@@ -24,8 +25,10 @@ class IntegrationUpdateQuantityServlet {
 
     private TestableUpdateQuantityServlet servlet;
 
+    // anche se non viene usato nel doPost, lo iniettiamo per coerenza con @EJB
     private CartServiceRemote cartService;
 
+    // mock web
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
@@ -72,6 +75,7 @@ class IntegrationUpdateQuantityServlet {
 
         verify(response).sendRedirect("cart.jsp");
 
+        // cartService non viene usato nel codice: verifichiamo che non venga chiamato
         verifyNoInteractions(cartService);
     }
 

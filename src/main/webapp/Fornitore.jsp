@@ -1,14 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.RequestManagement.OrderRequest" %>
-<%@ page import="remoteInterfaces.CatalogoRemote" %>
+<%@ page import="model.RequestManagement.ProductRequest" %>
 <%@ page import="service.Catalogo" %>
-<%@ page import="model.OrderManagement.Prodotto" %>
 <%@ page import="jakarta.ejb.EJB" %>
-
+<%@ page import="remoteInterfaces.CatalogoRemote" %>
+<%@ page import="model.OrderManagement.Prodotto" %>
 <html>
 <head>
-    <title>Gestione Richieste Ordini</title>
+    <title></title>
     <style>
         body, html {
             width: 100%;
@@ -63,6 +62,7 @@
         }
 
         /* Contenuto principale con scorrimento */
+
         .content {
             padding-top: 70px; /* Evita che la navbar copra il contenuto */
             padding: 20px;
@@ -149,20 +149,22 @@
             }
         }
     </style>
-
     <script>
-        function accettaRichiesta(richiestaId, ordineID) {
+        function accettaRichiesta(richiestaId, idProdotto, quantita) {
+            // Invia una richiesta AJAX per accettare la richiesta
             const params = new URLSearchParams();
             params.append("idRequest", richiestaId);
-            params.append("idOrdine", ordineID);
+            params.append("idProdotto", idProdotto);
+            params.append("quantita", quantita);
 
-            fetch("accettaRichiestaOrdineServlet", {
+            fetch("accettaRichiestaServlet", {
                 method: "POST",
                 body: params
             })
                 .then(response => response.text())
                 .then(data => {
                     console.log(data);
+                    // Se la richiesta è stata accettata, rimuovi la riga dalla tabella
                     const row = document.getElementById("richiesta_" + richiestaId);
                     row.remove(); // Rimuove la riga
                 })
@@ -175,7 +177,7 @@
     <nav class="navbar">
         <div class="navbar_item"><a href="Profile.jsp">Profilo</a></div>
         <div class="navbar_item"><a href="request">Richieste</a></div>
-        <div class="navbar_item"><a href="ordini">Gestisci ordini</a></div>
+        <div class="navbar_item"><a href="CreaProdotto.jsp">Crea Prodotto</a></div>
         <div class="navbar_item"><a href="logout.jsp">Logout</a></div>
     </nav>
 </header>
@@ -186,24 +188,27 @@
     <h2>Richieste di Prodotti dai Magazzinieri</h2>
 
     <table>
-        <thead>
         <tr>
-            <th>Id Ordine</th>
+            <th>Prodotto</th>
+            <th>Quantità</th>
             <th>Messaggio</th>
             <th>Azioni</th>
         </tr>
-        </thead>
-        <tbody>
         <%
-            List<OrderRequest> richiesteOrdini = (List<OrderRequest>) request.getAttribute("richiesteOrdini");
-            if (richiesteOrdini != null && !richiesteOrdini.isEmpty()) {
-                for (OrderRequest richiesta : richiesteOrdini) {
+            List<ProductRequest> richiesteFornitore = (List<ProductRequest>) request.getAttribute("richiesteFornitore");
+            List<Prodotto> prodotti = (List<Prodotto>) request.getAttribute("prodotti");
+
+            if (richiesteFornitore != null && !richiesteFornitore.isEmpty() && prodotti != null && prodotti.size() == richiesteFornitore.size()) {
+                for (int i = 0; i < richiesteFornitore.size(); i++) {
+                    ProductRequest richiesta = richiesteFornitore.get(i);
+                    Prodotto prodotto = prodotti.get(i); // prendi l'elemento corrispondente nella lista dei prodotti
         %>
         <tr id="richiesta_<%= richiesta.getId() %>">
-            <td><%= richiesta.getOrdineID() %></td>
+            <td><%= prodotto.getNome() %></td>
+            <td><%= richiesta.getQuantita() %></td>
             <td><%= richiesta.getMessage() %></td>
             <td>
-                <button class="button" onclick="accettaRichiesta(<%= richiesta.getId() %>, <%= richiesta.getOrdineID() %>)">Accetta</button>
+                <button class="btn-accept" onclick="accettaRichiesta(<%= richiesta.getId() %>, <%= prodotto.getId() %>, <%= richiesta.getQuantita() %>)">Accetta</button>
             </td>
         </tr>
         <%
@@ -211,14 +216,12 @@
         } else {
         %>
         <tr>
-            <td colspan="3">Nessuna richiesta disponibile.</td>
+            <td colspan="4">Nessuna richiesta disponibile.</td>
         </tr>
         <%
             }
         %>
-        </tbody>
     </table>
 </div>
-
 </body>
 </html>

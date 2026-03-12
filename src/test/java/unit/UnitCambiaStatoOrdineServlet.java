@@ -84,7 +84,6 @@ class UnitCambiaStatoOrdineServlet {
         when(orderService.findOrderById(1)).thenReturn(ordine);
     }
 
-
     /** Testa TR valida: preparation -> delivery deve andare in success e chiamare updateOrder. */
     @Test
     void transizione_preparation_to_delivery_valid() throws Exception {
@@ -113,7 +112,6 @@ class UnitCambiaStatoOrdineServlet {
         System.out.println("OK -> TR valid: DELIVERY -> CONSEGNATO (success + updateOrder)");
     }
 
-    // TRANSIZIONI NON CONSENTITE
 
     /** Testa TR error: preparation -> consegnato NON consentita (nel codice è false). */
     @Test

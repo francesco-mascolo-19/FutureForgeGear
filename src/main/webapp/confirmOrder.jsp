@@ -11,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Conferma Ordine</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">  <!-- Aggiungi il tuo stile -->
 </head>
 <body>
 

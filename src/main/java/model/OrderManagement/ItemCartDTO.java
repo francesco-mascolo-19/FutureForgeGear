@@ -4,6 +4,7 @@ public class ItemCartDTO {
     private int prodottoId;
     private int quantity;
 
+    public ItemCartDTO() {}
     public ItemCartDTO(int prodottoId, int quantity) {
         this.prodottoId = prodottoId;
         this.quantity = quantity;

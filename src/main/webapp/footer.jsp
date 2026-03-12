@@ -8,7 +8,7 @@
             <img src="image/ffglogo.png" >
         </div>
         <div class="copyright">
-            <p>&copy; 2025 FUTURE FORGE GEAR. Tutti i diritti riservati.<a href="privacyPolicy.jsp"> Privacy policy</a> Developed by: F.Mascolo F.Lamanna L.Mazza</p>
+            <p>&copy; 2026 FUTURE FORGE GEAR. Tutti i diritti riservati.<a href="privacyPolicy.jsp"> Privacy policy</a> Developed by: F.Mascolo F.Lamanna L.Mazza</p>
 
         </div>
     </div>

@@ -18,7 +18,7 @@
 <html>
 <head>
     <title>Profilo</title>
-    <link rel="stylesheet" href="style/StyleProfile.css">
+    <link rel="stylesheet" href="style/StyleProfile.css?v=2">
 </head>
 <body>
 

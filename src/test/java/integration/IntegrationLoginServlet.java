@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 class IntegrationLoginServlet extends JpaH2TestBase {
 
+    // Sottoclasse per esporre doGet/doPost (protected) come public
     private static class TestableLoginServlet extends LoginServlet {
         public void doGetPublic(HttpServletRequest req, HttpServletResponse resp) throws Exception {
             super.doGet(req, resp);
@@ -33,9 +34,11 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
     private TestableLoginServlet servlet;
 
+    // servizi REALI (no mock)
     private UserService userService;
     private OrderService orderService;
 
+    // mock web layer
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
@@ -61,16 +64,20 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
     @BeforeEach
     void setUp() {
+        // servlet
         servlet = new TestableLoginServlet();
 
+        // servizi reali con EM H2
         userService = new UserService();
         orderService = new OrderService();
         injectEntityManager(userService, em);
         injectEntityManager(orderService, em);
 
+        // iniezione servizi nella servlet (simula @EJB)
         inject(servlet, "userService", userService);
         inject(servlet, "orderService", orderService);
 
+        // mock request/response/session/dispatcher
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
@@ -78,12 +85,27 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
         when(request.getSession()).thenReturn(session);
         when(request.getRequestDispatcher("/login.jsp")).thenReturn(dispatcher);
-        when(request.getContextPath()).thenReturn("");
+        when(request.getContextPath()).thenReturn(""); // così redirect è "/home2.jsp" ecc.
 
+        // pulizia DB
         em.createQuery("delete from Ordine").executeUpdate();
         em.createQuery("delete from Utente").executeUpdate();
         commitAndRestartTx();
     }
+
+    /*
+    Nei test di integrazione JUnit non viene avviato alcun application server
+    (es. Payara / WildFly), quindi le annotazioni @EJB NON vengono elaborate.*
+    Per questo motivo i service EJB vengono istanziati manualmente e
+    iniettati nella servlet tramite reflection, simulando il comportamento
+    del container.*
+    In questo modo:
+    i service sono REALI (non mock)
+    l'EntityManager è reale (H2)
+    viene testato il flusso completo servlet + service + DB
+    senza dipendere da un server applicativo.
+    */
+
 
     // ------------------------
     // doGet() -> Integration
@@ -91,12 +113,14 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
     @Test
     void doGet_caricaClienti_e_faForwardLoginJsp() throws Exception {
+        // preparo utenti nel DB
         em.persist(newUtente("Mario", "Rossi", "mario@x.it", "pwd", Ruolo.CLIENTE));
         em.persist(newUtente("Anna", "Bianchi", "anna@x.it", "pwd", Ruolo.CLIENTE));
         commitAndRestartTx();
 
         servlet.doGetPublic(request, response);
 
+        // verifica: attributo clienti e forward
         verify(request).setAttribute(eq("clienti"), argThat(list -> ((List<?>) list).size() == 2));
         verify(dispatcher).forward(request, response);
         verify(response, never()).sendRedirect(anyString());
@@ -108,10 +132,12 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
     @Test
     void doPost_utenteEsiste_passwordCorretta_ruoloCliente_redirectHome2_e_settaSessione() throws Exception {
+        // utente in DB
         Utente u = newUtente("Luca", "Verdi", "luca@x.it", "pwd123", Ruolo.CLIENTE);
         em.persist(u);
         commitAndRestartTx();
 
+        // ordini associati all'utente
         em.persist(newOrdine(u.getId(), 100.0));
         em.persist(newOrdine(u.getId(), 50.0));
         commitAndRestartTx();
@@ -121,9 +147,11 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
         servlet.doPostPublic(request, response);
 
+        // sessione
         verify(session).setAttribute(eq("loggedUser"), any(Utente.class));
         verify(session).setAttribute(eq("orders"), argThat(list -> ((List<?>) list).size() == 2));
 
+        // redirect basato sul ruolo
         verify(response).sendRedirect("/home2.jsp");
         verify(dispatcher, never()).forward(request, response);
     }
@@ -156,6 +184,10 @@ class IntegrationLoginServlet extends JpaH2TestBase {
 
         servlet.doPostPublic(request, response);
 
+        // deve andare in errore e fare forward
+
+
+        // niente redirect
         verify(response, never()).sendRedirect(anyString());
     }
 
@@ -164,6 +196,7 @@ class IntegrationLoginServlet extends JpaH2TestBase {
         when(request.getParameter("email")).thenReturn("inesistente@x.it");
         when(request.getParameter("password")).thenReturn("pwd");
 
+        // userService.findUserByEmail farà NoResultException -> catch -> forward
         servlet.doPostPublic(request, response);
 
         verify(request).setAttribute(eq("loginError"), anyString());
