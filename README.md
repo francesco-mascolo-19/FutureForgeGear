@@ -49,3 +49,35 @@ mentre mette a disposizione degli amministratori strumenti dedicati al controllo
   - Apache TomEE
 - **Architettura**:
   - Architettura web multi-layer basata su separazione tra presentazione, logica applicativa e persistenza
+
+---
+
+## Screenshots
+
+### Home Page
+Schermata iniziale dell'applicazione, con accesso alle principali funzionalità del sito e panoramica generale della piattaforma.
+
+![Home Page](readmeassets/home1.png)
+
+![Home Page2](readmeassets/home2.png)
+
+### Catalogo Prodotti
+Sezione dedicata alla consultazione dei prodotti disponibili, con organizzazione del catalogo e accesso ai dettagli di ciascun articolo.
+
+![Catalogo Prodotti](readmeassets/catalogo.png)
+
+### Carrello e Spedizione
+Area dedicata alla gestione del carrello e alla spedizione dei prodotti selezionati dall’utente.
+
+![Carrello](readmeassets/carrello.png)
+
+![Spedizione](readmeassets/spedizione.png)
+
+### Area Amministrativa
+Sezione riservata alla gestione del catalogo, del magazzino, degli ordini e delle operazioni amministrative.
+
+![Fornitore](readmeassets/fornitore.png)
+
+![Gestore Ordini](readmeassets/gestoreordini.png)
+
+![Magazziniere](readmeassets/magazziniere.png)
