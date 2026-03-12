@@ -11,11 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/*
-  NOTE:
-  doPost è protected, quindi per testarlo da package "unit"
-  usiamo una sottoclasse che espone un metodo public.
-*/
 class UnitRemoveProductServlet {
 
     private static class TestableRemoveProductServlet extends RemoveProductServlet {
@@ -62,10 +57,6 @@ class UnitRemoveProductServlet {
     void doPost_cartNull_nonChiamaRemoveItem_maFaRedirect() throws Exception {
         when(request.getParameter("productId")).thenReturn("10");
 
-        when(session.getAttribute("cart")).thenReturn(null);
-
-        // nel codice attuale, se cart è null qui esplode su cart.calculateTotal()
-        // quindi questo test descrive il comportamento atteso SOLO SE correggi la servlet.
         assertThrows(NullPointerException.class, () -> servlet.doPostPublic(request, response));
     }
 

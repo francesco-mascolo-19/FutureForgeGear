@@ -17,10 +17,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * UNIT test (senza DB) per CartService
- * Testa solo la logica interna e le decisioni, con EntityManager mockato.
- */
 class UnitCartService {
 
     private CartService service;

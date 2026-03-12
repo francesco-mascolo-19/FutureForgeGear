@@ -199,10 +199,6 @@ class UnitAddToCartServlet {
         System.out.println("OK -> Prodotto diverso: aggiunto nuovo item, redirect a cart.jsp");
     }
 
-    // -------------------------
-    // quantità (Q) - test mancanti
-    // -------------------------
-
     @Test
     void doGet_quantitaMaggioreDiZero_eMinoreUgualeDisponibilita_valid() throws Exception {
         // Q = 2, D = 5 => valido

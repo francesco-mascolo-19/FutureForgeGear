@@ -69,10 +69,6 @@ class UnitCreaProdottoServlet {
         when(filePart.getInputStream()).thenReturn(InputStream.nullInputStream());
     }
 
-    // -------------------------
-    // nome prodotto (N)
-    // -------------------------
-
     /** N valido: nome non nullo -> deve chiamare catalogo.addProduct e fare redirect. */
     @Test
     void doPost_nomeValido_valid() throws Exception {
@@ -108,9 +104,6 @@ class UnitCreaProdottoServlet {
         System.out.println("OK -> N nullo: non addProduct, non redirect, risposta errore scritta");
     }
 
-    // -------------------------
-    // prezzo prodotto (PR)
-    // -------------------------
 
     /** PR valid: prezzo > 0 (e compatibile con validazione 0.99..999.99) -> ok. */
     @Test
