@@ -64,20 +64,30 @@ Schermata iniziale dell'applicazione, con accesso alle principali funzionalità 
 ### Catalogo Prodotti
 Sezione dedicata alla consultazione dei prodotti disponibili, con organizzazione del catalogo e accesso ai dettagli di ciascun articolo.
 
+#### Catalogo
 ![Catalogo Prodotti](readmeassets/catalogo.png)
+
+#### Dettagli Articolo
+![Dettagli Articolo](readmeassets/dettagli.png)
 
 ### Carrello e Spedizione
 Area dedicata alla gestione del carrello e alla spedizione dei prodotti selezionati dall’utente.
 
+#### Carrello
 ![Carrello](readmeassets/carrello.png)
 
+#### Spedizione
 ![Spedizione](readmeassets/spedizione.png)
 
 ### Area Amministrativa
 Sezione riservata alla gestione del catalogo, del magazzino, degli ordini e delle operazioni amministrative.
 
+#### Fornitore
 ![Fornitore](readmeassets/fornitore.png)
 
+#### Gestore Ordini
 ![Gestore Ordini](readmeassets/gestoreordini.png)
 
+
+#### Magazziniere
 ![Magazziniere](readmeassets/magazziniere.png)
